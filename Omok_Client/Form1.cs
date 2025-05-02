@@ -8,9 +8,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Omok
+using MetroFramework.Forms;
+
+namespace Omok_Client
 {
-    public partial class Form1 : Form
+    public partial class Form1 : MetroForm
     {
         public Form1()
         {

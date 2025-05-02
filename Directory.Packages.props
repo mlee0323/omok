@@ -1,0 +1,5 @@
+<Project>
+  <ItemGroup>
+    <PackageVersion Include="MetroFramework" Version="1.2.0.3" />
+  </ItemGroup>
+</Project>
