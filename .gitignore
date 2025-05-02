@@ -1,0 +1,39 @@
+# 빌드 결과물
+bin/
+obj/
+
+# 사용자별 설정 파일
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# 패키지
+packages/
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+
+# Visual Studio 관련
+.vs/
+.vscode/
+
+# Resharper, Rider 등 IDE 설정
+_ReSharper*/
+.idea/
+*.DotSettings.user
+
+# 임시 파일
+*.tmp
+*.log
+
+# Publish 관련
+publish/
+
+# Windows 설정 파일
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ASP.NET 특화
+App_Data/

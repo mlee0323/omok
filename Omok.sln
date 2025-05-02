@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35919.96 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omok_Client", "Omok_Client\Omok_Client.csproj", "{0E752A43-B937-4A33-861A-CC71F7BE6B63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omok_Server", "Omok_Server\Omok_Server.csproj", "{7B20E988-3058-4185-A554-CA327C4B22BE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0E752A43-B937-4A33-861A-CC71F7BE6B63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E752A43-B937-4A33-861A-CC71F7BE6B63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E752A43-B937-4A33-861A-CC71F7BE6B63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E752A43-B937-4A33-861A-CC71F7BE6B63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B20E988-3058-4185-A554-CA327C4B22BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B20E988-3058-4185-A554-CA327C4B22BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B20E988-3058-4185-A554-CA327C4B22BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B20E988-3058-4185-A554-CA327C4B22BE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2A181CBB-AC65-4021-B71E-EFD1AD678B7C}
+	EndGlobalSection
+EndGlobal
