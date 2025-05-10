@@ -11,6 +11,9 @@ namespace Omok_Client
     {
         string userDBPath = Path.GetFullPath(Path.Combine("..", "..", "..", "db", "user.txt"));
 
+        public ChatForm ChatForm;
+        public GameMainScreen GameMainScreen;
+
         public Login()
         {
             InitializeComponent();
@@ -31,43 +34,62 @@ namespace Omok_Client
 
         private void login_btn_Click(object sender, EventArgs e)
         {
-            if (!File.Exists(userDBPath))
-            {
-                MessageBox.Show("로그인 > DB 오류");
-                return;
-            }
+            ChatForm = new ChatForm(GameMainScreen);
+            GameMainScreen = new GameMainScreen(this,ChatForm);
 
-            bool found = false;
+            ChatForm.StartPosition = FormStartPosition.Manual;
+            GameMainScreen.StartPosition = FormStartPosition.Manual;
 
-            foreach (string line in File.ReadLines(userDBPath))
-            {
-                int id = 0;
-                string nickname = "";
-                string[] tokens = line.Split(',');
-                if (tokens.Length >= 2)
-                {
-                    id = int.Parse(tokens[0]);
-                    nickname = tokens[1];
-                    string userid = tokens[2];
-                    string pw = tokens[3];
-                    if (login_id.Text == userid && login_pw.Text == pw)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-            }
+            GameMainScreen.Location = new System.Drawing.Point(100, 100);
+            ChatForm.Location = new System.Drawing.Point(100 + GameMainScreen.Width, 100);
 
-            if (!found)
-            {
-                MessageBox.Show("아이디 또는 비밀번호가 올바르지 않습니다.");
-            }
-            else
-            {
-                // TODO: 로그인 성공 후 처리
-                // 게임 대기 화면 Form으로 이동 코드 필요
-            }
+
+            ChatForm.Show();
+            GameMainScreen.Show();
+
+            this.Hide();
+            //if (!File.Exists(userDBPath))
+            //{
+            //    MessageBox.Show("로그인 > DB 오류");
+            //    return;
+            //}
+
+            //bool found = false;
+
+            //foreach (string line in File.ReadLines(userDBPath))
+            //{
+            //    int id = 0;
+            //    string nickname = "";
+            //    string[] tokens = line.Split(',');
+            //    if (tokens.Length >= 2)
+            //    {
+            //        id = int.Parse(tokens[0]);
+            //        nickname = tokens[1];
+            //        string userid = tokens[2];
+            //        string pw = tokens[3];
+            //        if (login_id.Text == userid && login_pw.Text == pw)
+            //        {
+            //            found = true;
+            //            break;
+            //        }
+            //    }
+            //}
+
+            //if (!found)
+            //{
+            //    MessageBox.Show("아이디 또는 비밀번호가 올바르지 않습니다.");
+            //}
+            //else
+            //{
+            //    // TODO: 로그인 성공 후 처리
+            //    // 게임 대기 화면 Form으로 이동 코드 필요
+
+                
+            //}
         }
+
+
+        
 
         private void signup_btn_Click(object sender, EventArgs e)
         {
