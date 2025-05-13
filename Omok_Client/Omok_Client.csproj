@@ -48,7 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChatForm.cs">
-      <SubType>Form</SubType>
+      <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="ChatForm.Designer.cs">
       <DependentUpon>ChatForm.cs</DependentUpon>
@@ -58,6 +58,12 @@
     </Compile>
     <Compile Include="GameMainScreen.Designer.cs">
       <DependentUpon>GameMainScreen.cs</DependentUpon>
+    </Compile>
+    <Compile Include="GoBoardControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GoBoardControl.Designer.cs">
+      <DependentUpon>GoBoardControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Login.cs">
       <SubType>Form</SubType>

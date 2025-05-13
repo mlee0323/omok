@@ -8,24 +8,61 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using MetroFramework.Forms;
+
 namespace Omok
 {
-    public partial class GameMainScreen : Form
+    public partial class GameMainScreen : MetroForm
     {
-        private Form loginForm;
-        private Form chatForm;
-        public GameMainScreen(Form loginForm,Form chatForm)
+        private ChatForm chatForm;
+
+        public GameMainScreen()
         {
             InitializeComponent();
-            this.loginForm = loginForm;
-            this.chatForm = chatForm;
+
+            this.ClientSize = new Size(710, 710);
+            this.MinimumSize = new Size(710, 710);
+
+            LoadChatForm(); // 외부 폼 로드
+            LoadBoard(); // 바둑판 로드
+        }
+
+        /*******************
+         *    로드 관련
+         *******************/
+
+        private void LoadChatForm()
+        {
+            chatForm = new ChatForm();
+            ChattingPanel.Controls.Add(chatForm);
+            chatForm.Dock = DockStyle.Fill;
+            // chatForm.FormClosed += (s, args) => chatForm = null; // 폼이 닫히면 null로 설정
+
+            // chatForm.StartPosition = FormStartPosition.Manual;
+            //chatForm.Location = new Point(
+            //    this.Location.X + this.Width,
+            //    this.Location.Y
+            //);
+            // chatForm.Show();
+            // SyncChatFormLocation(); // 위치 동기화
+        }
+
+        private void LoadBoard()
+        {
+            GoBoardControl board = new GoBoardControl();
+            board.Dock = DockStyle.Fill;
+
+            MainPanel.Controls.Add(board);
+            MainPanel.AutoScroll = false;
+            MainPanel.HorizontalScrollbar = false;
+            MainPanel.VerticalScrollbar = false;
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
         {
             this.Close();
-            chatForm?.Close();
-            loginForm?.Show();
+            // chatForm?.Close();
+            // loginForm?.Show(); 필요 없음
         }
 
         private void ShuffleButton_Click(object sender, EventArgs e)

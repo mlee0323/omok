@@ -10,13 +10,11 @@ using System.Windows.Forms;
 
 namespace Omok
 {
-    public partial class ChatForm : Form
+    public partial class ChatForm : UserControl
     {
-        private GameMainScreen gameMainScreen;
-        public ChatForm(GameMainScreen form)
+        public ChatForm()
         {
             InitializeComponent();
-            this.gameMainScreen = form;
         }
 
         private void ChatForm_Load(object sender, EventArgs e)
@@ -40,8 +38,5 @@ namespace Omok
         {
            
         }
-
-
-
     }
 }

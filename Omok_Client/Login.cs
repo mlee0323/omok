@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 
@@ -34,20 +35,15 @@ namespace Omok_Client
 
         private void login_btn_Click(object sender, EventArgs e)
         {
-            ChatForm = new ChatForm(GameMainScreen);
-            GameMainScreen = new GameMainScreen(this,ChatForm);
+            GameMainScreen = new GameMainScreen();
+            GameMainScreen.FormClosed += (s, ev) =>
+            {
+                this.Show();       // 로그인 폼 다시 보이기
+            };
 
-            ChatForm.StartPosition = FormStartPosition.Manual;
-            GameMainScreen.StartPosition = FormStartPosition.Manual;
-
-            GameMainScreen.Location = new System.Drawing.Point(100, 100);
-            ChatForm.Location = new System.Drawing.Point(100 + GameMainScreen.Width, 100);
-
-
-            ChatForm.Show();
             GameMainScreen.Show();
-
             this.Hide();
+
             //if (!File.Exists(userDBPath))
             //{
             //    MessageBox.Show("로그인 > DB 오류");
@@ -84,12 +80,12 @@ namespace Omok_Client
             //    // TODO: 로그인 성공 후 처리
             //    // 게임 대기 화면 Form으로 이동 코드 필요
 
-                
+
             //}
         }
 
 
-        
+
 
         private void signup_btn_Click(object sender, EventArgs e)
         {
