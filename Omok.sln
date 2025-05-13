@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루�
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omok_Chat", "Omok_Chat\Omok_Chat.csproj", "{A1C4DC26-2DBD-4BEE-BABF-0A65E34A8E22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,6 +28,10 @@ Global
 		{7B20E988-3058-4185-A554-CA327C4B22BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7B20E988-3058-4185-A554-CA327C4B22BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7B20E988-3058-4185-A554-CA327C4B22BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1C4DC26-2DBD-4BEE-BABF-0A65E34A8E22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1C4DC26-2DBD-4BEE-BABF-0A65E34A8E22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1C4DC26-2DBD-4BEE-BABF-0A65E34A8E22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1C4DC26-2DBD-4BEE-BABF-0A65E34A8E22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
