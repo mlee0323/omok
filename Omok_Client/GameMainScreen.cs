@@ -16,12 +16,14 @@ namespace Omok
     {
         private ChatForm chatForm;
 
+        private int turnNum = 1;
+
         public GameMainScreen()
         {
             InitializeComponent();
 
-            this.ClientSize = new Size(710, 710);
-            this.MinimumSize = new Size(710, 710);
+            this.ClientSize = new Size(850, 650);
+            this.MinimumSize = new Size(850, 650);
 
             LoadChatForm(); // 외부 폼 로드
             LoadBoard(); // 바둑판 로드
@@ -36,6 +38,7 @@ namespace Omok
             chatForm = new ChatForm();
             ChattingPanel.Controls.Add(chatForm);
             chatForm.Dock = DockStyle.Fill;
+
             // chatForm.FormClosed += (s, args) => chatForm = null; // 폼이 닫히면 null로 설정
 
             // chatForm.StartPosition = FormStartPosition.Manual;
@@ -56,6 +59,40 @@ namespace Omok
             MainPanel.AutoScroll = false;
             MainPanel.HorizontalScrollbar = false;
             MainPanel.VerticalScrollbar = false;
+
+            CurrentTurnLabel.Text = userLabel1.Text + "( 흑 )";     // 시작은 user1 ( 흑 ) 차례 부터
+
+            board.OnTurnChanged += (turnText) =>                    // 턴이 바뀜에 따른 현재 턴 사용자 이름 출력
+            {
+                turnNum++;
+                if (turnNum == 5)
+                    turnNum = 1;
+                if (turnText == "게임 종료")                        // turnText : 현재 차례 표시 ( 흑 / 백 )
+                {
+                    CurrentTurnLabel.Text = "게임 종료";
+                    return;
+                }
+
+                switch (turnNum)                                    // turnNum : 현재 유저 차례 번호
+                {
+                    case 1:
+                        turnText = userLabel1.Text + turnText;                       
+                        break;
+                    case 2:
+                        turnText = userLabel2.Text + turnText;                        
+                        break;
+                    case 3:
+                        turnText = userLabel3.Text + turnText;                       
+                        break;
+                    case 4:
+                        turnText = userLabel4.Text + turnText;                      
+                        break;
+                }
+                
+                CurrentTurnLabel.Text = turnText;
+                
+            };
+
         }
 
         private void ExitButton_Click(object sender, EventArgs e)
@@ -101,6 +138,7 @@ namespace Omok
             // TODO
             // 1. 패널 클릭 시 좌표 계산해서 착수
             // 2. 현재 턴 사용자 이름 CurrentTurnLabel.Text 변경
+            // GoBoardControl에서 처리했음.
         }
 
         private void GameMainScreen_LocationChanged(object sender, EventArgs e)
@@ -117,6 +155,11 @@ namespace Omok
                     this.Location.Y
                 );
             }
+        }
+
+        private void MainPanel_MouseDown(object sender, MouseEventArgs e)
+        {
+            
         }
     }
 }

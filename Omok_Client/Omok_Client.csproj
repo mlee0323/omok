@@ -85,6 +85,9 @@
     <EmbeddedResource Include="GameMainScreen.resx">
       <DependentUpon>GameMainScreen.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="GoBoardControl.resx">
+      <DependentUpon>GoBoardControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>

@@ -46,60 +46,60 @@
             // 
             // ExitButton
             // 
-            this.ExitButton.Location = new System.Drawing.Point(647, 1228);
-            this.ExitButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ExitButton.Location = new System.Drawing.Point(377, 589);
+            this.ExitButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ExitButton.Name = "ExitButton";
-            this.ExitButton.Size = new System.Drawing.Size(270, 67);
+            this.ExitButton.Size = new System.Drawing.Size(158, 32);
             this.ExitButton.TabIndex = 0;
             this.ExitButton.Text = "나가기";
             this.ExitButton.Click += new System.EventHandler(this.ExitButton_Click);
             // 
             // SkillButton1
             // 
-            this.SkillButton1.Location = new System.Drawing.Point(62, 1131);
-            this.SkillButton1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.SkillButton1.Location = new System.Drawing.Point(36, 543);
+            this.SkillButton1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.SkillButton1.Name = "SkillButton1";
-            this.SkillButton1.Size = new System.Drawing.Size(225, 67);
+            this.SkillButton1.Size = new System.Drawing.Size(131, 32);
             this.SkillButton1.TabIndex = 1;
             this.SkillButton1.Text = "스킬 1";
             this.SkillButton1.Click += new System.EventHandler(this.SkillButton1_Click);
             // 
             // SkillButton2
             // 
-            this.SkillButton2.Location = new System.Drawing.Point(363, 1131);
-            this.SkillButton2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.SkillButton2.Location = new System.Drawing.Point(212, 543);
+            this.SkillButton2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.SkillButton2.Name = "SkillButton2";
-            this.SkillButton2.Size = new System.Drawing.Size(225, 67);
+            this.SkillButton2.Size = new System.Drawing.Size(131, 32);
             this.SkillButton2.TabIndex = 2;
             this.SkillButton2.Text = "스킬 2";
             this.SkillButton2.Click += new System.EventHandler(this.SkillButton2_Click);
             // 
             // ShuffleButton
             // 
-            this.ShuffleButton.Location = new System.Drawing.Point(340, 1228);
-            this.ShuffleButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.ShuffleButton.Location = new System.Drawing.Point(198, 589);
+            this.ShuffleButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.ShuffleButton.Name = "ShuffleButton";
-            this.ShuffleButton.Size = new System.Drawing.Size(270, 67);
+            this.ShuffleButton.Size = new System.Drawing.Size(158, 32);
             this.ShuffleButton.TabIndex = 3;
             this.ShuffleButton.Text = "팀 셔플";
             this.ShuffleButton.Click += new System.EventHandler(this.ShuffleButton_Click);
             // 
             // SkillButton3
             // 
-            this.SkillButton3.Location = new System.Drawing.Point(647, 1131);
-            this.SkillButton3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.SkillButton3.Location = new System.Drawing.Point(377, 543);
+            this.SkillButton3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.SkillButton3.Name = "SkillButton3";
-            this.SkillButton3.Size = new System.Drawing.Size(225, 67);
+            this.SkillButton3.Size = new System.Drawing.Size(131, 32);
             this.SkillButton3.TabIndex = 4;
             this.SkillButton3.Text = "스킬 3";
             this.SkillButton3.Click += new System.EventHandler(this.SkillButton3_Click);
             // 
             // timeOutButton
             // 
-            this.timeOutButton.Location = new System.Drawing.Point(17, 1228);
-            this.timeOutButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.timeOutButton.Location = new System.Drawing.Point(10, 589);
+            this.timeOutButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.timeOutButton.Name = "timeOutButton";
-            this.timeOutButton.Size = new System.Drawing.Size(270, 67);
+            this.timeOutButton.Size = new System.Drawing.Size(158, 32);
             this.timeOutButton.TabIndex = 5;
             this.timeOutButton.Text = "타임아웃";
             this.timeOutButton.Click += new System.EventHandler(this.timeOutButton_Click);
@@ -107,7 +107,8 @@
             // userLabel1
             // 
             this.userLabel1.AutoSize = true;
-            this.userLabel1.Location = new System.Drawing.Point(14, 94);
+            this.userLabel1.Location = new System.Drawing.Point(8, 45);
+            this.userLabel1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.userLabel1.Name = "userLabel1";
             this.userLabel1.Size = new System.Drawing.Size(40, 19);
             this.userLabel1.TabIndex = 13;
@@ -116,7 +117,8 @@
             // showTurnLabel
             // 
             this.showTurnLabel.AutoSize = true;
-            this.showTurnLabel.Location = new System.Drawing.Point(282, 94);
+            this.showTurnLabel.Location = new System.Drawing.Point(164, 45);
+            this.showTurnLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.showTurnLabel.Name = "showTurnLabel";
             this.showTurnLabel.Size = new System.Drawing.Size(55, 19);
             this.showTurnLabel.TabIndex = 14;
@@ -125,7 +127,8 @@
             // CurrentTurnLabel
             // 
             this.CurrentTurnLabel.AutoSize = true;
-            this.CurrentTurnLabel.Location = new System.Drawing.Point(520, 94);
+            this.CurrentTurnLabel.Location = new System.Drawing.Point(303, 45);
+            this.CurrentTurnLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.CurrentTurnLabel.Name = "CurrentTurnLabel";
             this.CurrentTurnLabel.Size = new System.Drawing.Size(101, 19);
             this.CurrentTurnLabel.TabIndex = 15;
@@ -136,18 +139,21 @@
             this.MainPanel.HorizontalScrollbarBarColor = false;
             this.MainPanel.HorizontalScrollbarHighlightOnWheel = false;
             this.MainPanel.HorizontalScrollbarSize = 0;
-            this.MainPanel.Location = new System.Drawing.Point(17, 134);
+            this.MainPanel.Location = new System.Drawing.Point(10, 64);
+            this.MainPanel.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.MainPanel.Name = "MainPanel";
-            this.MainPanel.Size = new System.Drawing.Size(900, 900);
+            this.MainPanel.Size = new System.Drawing.Size(525, 432);
             this.MainPanel.TabIndex = 16;
             this.MainPanel.VerticalScrollbarBarColor = false;
             this.MainPanel.VerticalScrollbarHighlightOnWheel = false;
             this.MainPanel.VerticalScrollbarSize = 0;
+            this.MainPanel.MouseDown += new System.Windows.Forms.MouseEventHandler(this.MainPanel_MouseDown);
             // 
             // userLabel2
             // 
             this.userLabel2.AutoSize = true;
-            this.userLabel2.Location = new System.Drawing.Point(831, 94);
+            this.userLabel2.Location = new System.Drawing.Point(485, 45);
+            this.userLabel2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.userLabel2.Name = "userLabel2";
             this.userLabel2.Size = new System.Drawing.Size(42, 19);
             this.userLabel2.TabIndex = 17;
@@ -156,7 +162,8 @@
             // userLabel3
             // 
             this.userLabel3.AutoSize = true;
-            this.userLabel3.Location = new System.Drawing.Point(14, 1050);
+            this.userLabel3.Location = new System.Drawing.Point(8, 504);
+            this.userLabel3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.userLabel3.Name = "userLabel3";
             this.userLabel3.Size = new System.Drawing.Size(42, 19);
             this.userLabel3.TabIndex = 18;
@@ -165,7 +172,8 @@
             // userLabel4
             // 
             this.userLabel4.AutoSize = true;
-            this.userLabel4.Location = new System.Drawing.Point(831, 1050);
+            this.userLabel4.Location = new System.Drawing.Point(485, 504);
+            this.userLabel4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.userLabel4.Name = "userLabel4";
             this.userLabel4.Size = new System.Drawing.Size(42, 19);
             this.userLabel4.TabIndex = 19;
@@ -176,9 +184,10 @@
             this.ChattingPanel.HorizontalScrollbarBarColor = true;
             this.ChattingPanel.HorizontalScrollbarHighlightOnWheel = false;
             this.ChattingPanel.HorizontalScrollbarSize = 0;
-            this.ChattingPanel.Location = new System.Drawing.Point(982, 134);
+            this.ChattingPanel.Location = new System.Drawing.Point(573, 64);
+            this.ChattingPanel.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.ChattingPanel.Name = "ChattingPanel";
-            this.ChattingPanel.Size = new System.Drawing.Size(422, 1163);
+            this.ChattingPanel.Size = new System.Drawing.Size(246, 558);
             this.ChattingPanel.TabIndex = 20;
             this.ChattingPanel.VerticalScrollbarBarColor = true;
             this.ChattingPanel.VerticalScrollbarHighlightOnWheel = false;
@@ -186,9 +195,9 @@
             // 
             // GameMainScreen
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1462, 1320);
+            this.ClientSize = new System.Drawing.Size(850, 650);
             this.Controls.Add(this.ChattingPanel);
             this.Controls.Add(this.userLabel4);
             this.Controls.Add(this.userLabel3);
@@ -203,8 +212,9 @@
             this.Controls.Add(this.SkillButton2);
             this.Controls.Add(this.SkillButton1);
             this.Controls.Add(this.ExitButton);
-            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "GameMainScreen";
+            this.Padding = new System.Windows.Forms.Padding(12, 29, 12, 10);
             this.Load += new System.EventHandler(this.GameMainScreen_Load);
             this.LocationChanged += new System.EventHandler(this.GameMainScreen_LocationChanged);
             this.ResumeLayout(false);
