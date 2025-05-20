@@ -239,6 +239,22 @@ namespace Omok_Chat
                 Send();
             }
         }
+
+        private void btn_emoji_Click(object sender, EventArgs e)
+        {
+            ContextMenu emojiMenu = new ContextMenu();
+            emojiMenu.MenuItems.Add("😊", (s, args) => InsertEmoji("😊"));
+            emojiMenu.MenuItems.Add("😂", (s, args) => InsertEmoji("😂"));
+            emojiMenu.MenuItems.Add("❤️", (s, args) => InsertEmoji("❤️"));
+            emojiMenu.MenuItems.Add("👍", (s, args) => InsertEmoji("👍"));
+            emojiMenu.Show(btn_emoji, new Point(0, btn_emoji.Height));
+        }
+
+        private void InsertEmoji(string emoji)
+        {
+            txt_Send.AppendText(emoji);
+            txt_Send.Focus();
+        }
     }
 
 }
