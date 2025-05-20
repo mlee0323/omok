@@ -121,5 +121,15 @@
       <Version>1.2.0.3</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Omok_Server\Omok_Server.csproj">
+      <Project>{7b20e988-3058-4185-a554-ca327c4b22be}</Project>
+      <Name>Omok_Server</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Pack_Server\Pack_Server.csproj">
+      <Project>{b6d19a5a-f3bf-46ac-b259-f71ef817a230}</Project>
+      <Name>Pack_Server</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

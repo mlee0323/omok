@@ -18,16 +18,34 @@ namespace Omok
 
         private int turnNum = 1;
 
-        public GameMainScreen()
+        private List<string> userNicknames = new List<string>(); // 로그인 시 서버에서 받은 유저 닉네임
+
+        public GameMainScreen(List<string> nicknames)
         {
             InitializeComponent();
 
             this.ClientSize = new Size(850, 650);
             this.MinimumSize = new Size(850, 650);
 
+            Label[] userLabels = { userLabel1, userLabel2, userLabel3, userLabel4 };
+
+            for (int i = 0; i < userLabels.Length; i++)
+            {
+                if (i < nicknames.Count)
+                    userLabels[i].Text = nicknames[i];
+                else
+                    userLabels[i].Text = "";
+            }
+
+            if (nicknames.Count > 0)
+                CurrentTurnLabel.Text = nicknames[0] + "( 흑 )";
+            else
+                CurrentTurnLabel.Text = "대기 중";
             LoadChatForm(); // 외부 폼 로드
             LoadBoard(); // 바둑판 로드
         }
+
+       
 
         /*******************
          *    로드 관련
@@ -35,6 +53,7 @@ namespace Omok
 
         private void LoadChatForm()
         {
+            string chatNickname = (userNicknames.Count > 0) ? userNicknames[0] : "Guest";
             chatForm = new ChatForm();
             ChattingPanel.Controls.Add(chatForm);
             chatForm.Dock = DockStyle.Fill;
@@ -60,7 +79,7 @@ namespace Omok
             MainPanel.HorizontalScrollbar = false;
             MainPanel.VerticalScrollbar = false;
 
-            CurrentTurnLabel.Text = userLabel1.Text + "( 흑 )";     // 시작은 user1 ( 흑 ) 차례 부터
+            //CurrentTurnLabel.Text = userLabel1.Text + "( 흑 )";     // 시작은 user1 ( 흑 ) 차례 부터, 생성자에서 설정함
 
             board.OnTurnChanged += (turnText) =>                    // 턴이 바뀜에 따른 현재 턴 사용자 이름 출력
             {

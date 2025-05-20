@@ -36,6 +36,7 @@
             this.btn_exit = new System.Windows.Forms.Button();
             this.btn_send = new System.Windows.Forms.Button();
             this.txt_Send = new System.Windows.Forms.TextBox();
+            this.btn_emoji = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -114,11 +115,22 @@
             this.txt_Send.TabIndex = 6;
             this.txt_Send.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_Send_KeyDown);
             // 
+            // btn_emoji
+            // 
+            this.btn_emoji.Location = new System.Drawing.Point(841, 729);
+            this.btn_emoji.Name = "btn_emoji";
+            this.btn_emoji.Size = new System.Drawing.Size(198, 34);
+            this.btn_emoji.TabIndex = 7;
+            this.btn_emoji.Text = "이모티콘";
+            this.btn_emoji.UseVisualStyleBackColor = true;
+            this.btn_emoji.Click += new System.EventHandler(this.btn_emoji_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1083, 893);
+            this.Controls.Add(this.btn_emoji);
             this.Controls.Add(this.txt_Send);
             this.Controls.Add(this.btn_send);
             this.Controls.Add(this.btn_exit);
@@ -143,6 +155,7 @@
         private System.Windows.Forms.Button btn_exit;
         private System.Windows.Forms.Button btn_send;
         private System.Windows.Forms.TextBox txt_Send;
+        private System.Windows.Forms.Button btn_emoji;
     }
 }
 
