@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Drawing;
-using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-
 using MetroFramework.Forms;
+using Omok_Network;
 
 namespace Omok
 {
@@ -14,12 +14,9 @@ namespace Omok
         private bool pw_checked = false;
         private bool pw2_checked = false;
 
-        string userDBPath = Path.GetFullPath(Path.Combine("..", "..", "..", "db", "user.txt"));
-
         public SignUpForm()
         {
             InitializeComponent();
-
             signup_pw.UseSystemPasswordChar = true;
             signup_pw2.UseSystemPasswordChar = true;
         }
@@ -31,95 +28,132 @@ namespace Omok
             id_dupl_chk_btn.Enabled = false;
         }
 
-        private void nn_dupl_chk_btn_Click(object sender, EventArgs e)
+        private async void nn_dupl_chk_btn_Click(object sender, EventArgs e)
         {
-            // TODO: 닉네임 중복 체크 로직 추가
-            if (!File.Exists(userDBPath))
+            if (signup_name == null || string.IsNullOrWhiteSpace(signup_name.Text))
             {
-                MessageBox.Show("회원가입 > 닉네임 중복 체크 > DB 오류");
+                MessageBox.Show("닉네임을 입력해주세요.");
+                signup_name.Focus();
                 return;
             }
 
-            bool found = false;
+            nn_dupl_chk_btn.Enabled = false; // 중복 클릭 방지
 
-            foreach (string line in File.ReadLines(userDBPath))
+            var packet = new Authenticate_Packet
             {
-                string[] tokens = line.Split(',');
-                if (tokens.Length >= 2)
+                command = "NAME_CHECK",
+                nickname = signup_name.Text
+            };
+
+            Packet responsePacket = await Task.Run(() => NetworkManager.SendPacketSync(packet));
+
+            if (responsePacket is Authenticate_Packet authResult)
+            {
+                string result = authResult.result;
+
+                if (result == "NAME_DUPLICATE")
                 {
-                    string nickname = tokens[1];
-                    if (signup_name.Text == nickname)
-                    {
-                        found = true;
-                        break;
-                    }
+                    MessageBox.Show("이미 존재하는 닉네임입니다.");
+                }
+                else if (result == "NAME_OK")
+                {
+                    MessageBox.Show("사용 가능한 닉네임입니다.");
+                    nickname_dupl_checked = true;
+                }
+                else
+                {
+                    MessageBox.Show("서버 응답 오류: " + result);
                 }
             }
-
-            if (!found)
-            {
-                MessageBox.Show("사용 가능한 닉네임입니다.");
-                nickname_dupl_checked = true;
-            }
             else
-                MessageBox.Show("이미 존재하는 닉네임입니다.");
+            {
+                MessageBox.Show("서버에서 받은 패킷은 Authenticate_Packet이 아닙니다.\n" +
+                                $"받은 타입: {responsePacket?.GetType().FullName ?? "null"}");
+            }
 
+            signup_name.Focus(); // 다시 포커싱
+            nn_dupl_chk_btn.Enabled = true;
             validateForm();
         }
 
         private void id_dupl_chk_btn_Click(object sender, EventArgs e)
         {
-            // TODO: 아이디 중복 체크 로직 추가
-            if (!File.Exists(userDBPath))
+            var packet = new Authenticate_Packet
             {
-                MessageBox.Show("회원가입 > 아이디 중복 체크 > DB 오류");
-                return;
-            }
+                command = "ID_CHECK",
+                username = signup_id.Text
+            };
 
-            bool found = false;
-
-            foreach (string line in File.ReadLines(userDBPath))
+            var responsePacket = NetworkManager.SendPacketSync(packet);
+            if (responsePacket is Authenticate_Packet authResult)
             {
-                string[] tokens = line.Split(',');
-                if (tokens.Length >= 2)
+                string result = authResult.result;
+
+                if (result == "ID_DUPLICATE")
                 {
-                    string id = tokens[2];
-                    if (signup_id.Text == id)
-                    {
-                        found = true;
-                        break;
-                    }
+                    MessageBox.Show("이미 존재하는 아이디입니다.");
+                }
+                else if (result == "ID_OK")
+                {
+                    MessageBox.Show("사용 가능한 아이디입니다.");
+                    id_dupl_checked = true;
+                }
+                else
+                {
+                    MessageBox.Show("서버 응답 오류: " + result + $" (command: {packet.command})");
                 }
             }
-
-            if (!found)
-            {
-                MessageBox.Show("사용 가능한 유저명입니다.");
-                id_dupl_checked = true;
-            } 
             else
-                MessageBox.Show("이미 존재하는 유저명입니다.");
+            {
+                MessageBox.Show("잘못된 응답 형식입니다.");
+            }
 
             validateForm();
+        }
+
+        private void signup_btn_Click(object sender, EventArgs e)
+        {
+            var packet = new Authenticate_Packet
+            {
+                command = "REGISTER",
+                nickname = signup_name.Text,
+                username = signup_id.Text,
+                password = signup_pw.Text,
+                confirm = signup_pw2.Text
+            };
+
+            var responsePacket = NetworkManager.SendPacketSync(packet);
+            if (responsePacket is Authenticate_Packet authResult)
+            {
+                string result = authResult.result;
+
+                if (result == "REGISTER_SUCCESS")
+                {
+                    MessageBox.Show("회원가입되었습니다.");
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("회원가입 실패: " + result);
+                }
+            }
+            else
+            {
+                MessageBox.Show("서버 응답 오류 또는 잘못된 응답 형식입니다.");
+            }
         }
 
         private void signup_name_TextChanged(object sender, EventArgs e)
         {
             nickname_dupl_checked = false;
-            nn_dupl_chk_btn.Enabled = false;
-            if (signup_name.Text.Length > 0)
-                nn_dupl_chk_btn.Enabled = true;
-
+            nn_dupl_chk_btn.Enabled = signup_name.Text.Length > 0;
             validateForm();
         }
 
         private void signup_id_TextChanged(object sender, EventArgs e)
         {
             id_dupl_checked = false;
-            id_dupl_chk_btn.Enabled = false;
-            if (signup_id.Text.Length > 0)
-                id_dupl_chk_btn.Enabled = true;
-            
+            id_dupl_chk_btn.Enabled = signup_id.Text.Length > 0;
             validateForm();
         }
 
@@ -137,13 +171,14 @@ namespace Omok
                 signup_pw_warning_lb.ForeColor = Color.Green;
                 pw_checked = true;
             }
+
             signup_pw2_TextChange(sender, null);
             validateForm();
         }
 
         private void signup_pw2_TextChange(object sender, EventArgs e)
         {
-            if (signup_pw.Text == "")
+            if (string.IsNullOrEmpty(signup_pw.Text))
                 return;
 
             if (signup_pw.Text != signup_pw2.Text)
@@ -158,47 +193,14 @@ namespace Omok
                 signup_pw2_warning_lb.ForeColor = Color.Green;
                 pw2_checked = true;
             }
+
             validateForm();
         }
 
         private void validateForm()
         {
-            if (nickname_dupl_checked && id_dupl_checked && pw_checked && pw2_checked)
-            {
-                signup_btn.Enabled = true;
-            }
-            else
-            {
-                signup_btn.Enabled = false;
-            }
+            signup_btn.Enabled = nickname_dupl_checked && id_dupl_checked && pw_checked && pw2_checked;
         }
-
-        private void signup_btn_Click(object sender, EventArgs e)
-        {
-            if (!File.Exists(userDBPath))
-            {
-                MessageBox.Show("회원가입 > 회원가입 > DB 오류");
-                return;
-            }
-
-            string content = File.ReadAllText(userDBPath);
-            bool needsLineBreak = !string.IsNullOrEmpty(content) &&
-                                  !content.EndsWith("\n") && !content.EndsWith("\r");
-
-            int lineNumber = File.ReadAllLines(userDBPath).Length + 1;
-
-            using (StreamWriter sw = new StreamWriter(userDBPath, true))
-            {
-                if (needsLineBreak)
-                    sw.WriteLine();  // 단순 개행 한 번
-
-                sw.WriteLine($"{lineNumber},{signup_name.Text},{signup_id.Text},{signup_pw.Text}");  // 개행 자동 포함
-            }
-
-            MessageBox.Show("회원가입되었습니다.");
-            this.Close();
-        }
-
 
         private void close_btn_Click(object sender, EventArgs e)
         {

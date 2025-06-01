@@ -19,6 +19,13 @@ namespace Omok_Server
         private Dictionary<TcpClient, string> clientNicknames = new Dictionary<TcpClient, string>();
         private List<TcpClient> clients = new List<TcpClient>();
 
+        // 착수 기록용
+        private List<PlaceStonePacket> moveHistory = new List<PlaceStonePacket>();
+
+        // 로그인된 순서
+        private List<string> loginOrder = new List<string>();
+
+
         private Form1 form;
 
         public ServerManager(Form1 form, int port = 9999)
@@ -129,6 +136,8 @@ namespace Omok_Server
                             lock (clientNicknames)
                             {
                                 clientNicknames[client] = loginPacket.m_strID;
+                                if (!loginOrder.Contains(loginPacket.m_strID))
+                                    loginOrder.Add(loginPacket.m_strID);
                             }
                             form?.Invoke(new Action(() =>
                             {
@@ -148,6 +157,24 @@ namespace Omok_Server
 
                             BroadcastToClients(chat, client);
                             break;
+                        case (int)PacketType.PlacedStone:
+                            var ps = (PlaceStonePacket)packet;
+                            lock (moveHistory) { moveHistory.Add(ps); }
+
+                            int idx = loginOrder.IndexOf(ps.player);
+                            int nextIdx = (idx + 1) % loginOrder.Count;
+                            ps.nextTurnPlayer = loginOrder[nextIdx];
+
+
+                            form?.Invoke(new Action(() =>
+                            {
+                                form.LogMessage($"{ps.player} → ({ps.x},{ps.y}) {(ps.isBlack ? "흑" : "백")}, 다음 턴: {ps.nextTurnPlayer}");
+                            }));
+
+                            //form.LogMessage($"{ps.player} → ({ps.x},{ps.y}) {(ps.isBlack ? "흑" : "백")}");
+                            BroadcastToClients(ps);
+                            break;
+
                     }
                 }
             }

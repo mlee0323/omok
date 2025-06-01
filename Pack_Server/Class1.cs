@@ -10,7 +10,23 @@ namespace Pack_Server
         초기화 = 0,
         로그인,
         채팅메시지,
-        접속자목록  // 새로 추가
+        접속자목록,  // 새로 추가
+        PlacedStone = 100 // 착수 패킷용으로 추가함.
+    }
+
+    [Serializable]
+    public class PlaceStonePacket : Packet
+    {
+        public int x;
+        public int y;
+        public bool isBlack;
+        public string player;
+        public string nextTurnPlayer;
+
+        public PlaceStonePacket()
+        {
+            this.Type = (int)PacketType.PlacedStone;
+        }
     }
 
     [Serializable]
@@ -55,11 +71,13 @@ namespace Pack_Server
     public class Login_server : Packet
     {
         public string m_strID;
+       
 
         public Login_server()
         {
             this.Type = (int)PacketType.로그인;
             this.m_strID = null;
+            
         }
     }
 

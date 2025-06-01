@@ -52,19 +52,14 @@ namespace Omok_Client
             string ip = login_ip.Text.Trim();         // 서버 IP
             int port = 9999;    // 포트 번호
 
+            
+
             try
             {
                 m_client = new TcpClient();
                 m_client.Connect(ip, port); // 서버에 연결
                 m_stream = m_client.GetStream();
 
-                // 로그인 패킷 생성
-                Login_server loginPacket = new Login_server();
-                loginPacket.Type = (int)PacketType.로그인;
-                loginPacket.m_strID = login_id.Text;
-
-                byte[] data = Packet.Serialize(loginPacket);
-                m_stream.Write(data, 0, data.Length);
 
                 if (!File.Exists(userDBPath))
                 {
@@ -91,14 +86,36 @@ namespace Omok_Client
                     }
                 }
 
+
+                // 로그인 패킷 생성
+                Login_server loginPacket = new Login_server();
+                loginPacket.Type = (int)PacketType.로그인;
+                loginPacket.m_strID = login_id.Text;
+               
+
+                byte[] data = Packet.Serialize(loginPacket);
+                m_stream.Write(data, 0, data.Length);
+
+
                 if (userNickname == null)
                 {
                     MessageBox.Show("아이디 또는 비밀번호가 올바르지 않습니다.");
                     return; // 로그인 실패
                 }
 
+                if (!Login.loggedInUsers.Contains(userNickname))
+                    Login.loggedInUsers.Add(userNickname);
 
-                GameMainScreen = new GameMainScreen(Login.loggedInUsers);
+                // 바둑판용 패킷
+                TcpClient gameClient = new TcpClient();
+                gameClient.Connect(ip, port);  
+                NetworkStream gameStream = gameClient.GetStream();
+
+                //GameMainScreen = new GameMainScreen(Login.loggedInUsers);
+                GameMainScreen = new GameMainScreen(
+                    Login.loggedInUsers,
+                    gameStream,
+                    userNickname, login_id.Text);
                 GameMainScreen.FormClosed += (s, ev) =>
                 {
                     this.Show();       // 로그인 폼 다시 보이기
@@ -233,7 +250,21 @@ namespace Omok_Client
                 }
 
                 // 게임 메인 화면 생성 시 로그인 유저 리스트 전달
-                GameMainScreen = new GameMainScreen(Login.loggedInUsers);
+                //GameMainScreen = new GameMainScreen(Login.loggedInUsers);
+
+                // 바둑판용 패킷
+                TcpClient gameClient = new TcpClient();
+                gameClient.Connect(ip, port);  
+                NetworkStream gameStream = gameClient.GetStream();
+
+                GameMainScreen = new GameMainScreen(
+                    Login.loggedInUsers,
+                    gameStream,
+                    userNickname,
+                    login_id.Text
+
+                );
+
                 GameMainScreen.FormClosed += (s, ev) =>
                 {
                     this.Show();  // 로그인 폼 다시 보이기

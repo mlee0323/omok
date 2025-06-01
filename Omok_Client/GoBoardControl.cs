@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Pack_Server;
 
 namespace Omok
 {
@@ -27,6 +30,12 @@ namespace Omok
 
         public event Action<string> OnTurnChanged;
 
+        public NetworkStream NetStream {  get; set; }
+        public string MyNick { get; set; }
+
+        public string MyId { get; set; }
+
+        public string CurrentTurnPlayer { get; set; } 
 
 
         public GoBoardControl()
@@ -140,16 +149,38 @@ namespace Omok
                     break;
                 if (stones[nx, ny] != color)
                     break;
-
+                
                 count++;
             }
             return count;
 
         }
-        
+
+        public void ApplyRemoteMove(PlaceStonePacket ps)
+        {
+            stones[ps.x, ps.y] = ps.isBlack ? STONE.black : STONE.white;
+            flag = ps.isBlack ? true : false;
+            CurrentTurnPlayer = ps.nextTurnPlayer;
+            Debug.WriteLine($"[DEBUG] 착수 수신 → 다음 턴: {CurrentTurnPlayer}");
+            Invalidate();
+            OnTurnChanged?.Invoke(flag ? "( 백 )" : "( 흑 )");
+            
+
+        }
+
+
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
+            Console.WriteLine($"[DEBUG] MyId : {MyId} ,MyNick: {MyNick}, CurrentTurnPlayer: {CurrentTurnPlayer}");
+
+
+            if (MyId != CurrentTurnPlayer)
+            {
+                MessageBox.Show("자기 차례에만 착수 가능");
+                return;
+            }
+
             base.OnMouseClick(e);
             if (gameDone) return;
             int boardLines = 19;
@@ -168,14 +199,28 @@ namespace Omok
             int x = (e.X - originX + gridSize / 2) / gridSize;
             int y = (e.Y - originY + gridSize / 2) / gridSize;
 
-            
+
+            Console.WriteLine($"[DEBUG] OnMouseClick: NetStream=={NetStream == null}, x={x}, y={y}, flag={flag}");
 
             if (x >= 0 && x < 19 && y >= 0 && y < 19)
             {
                 if (stones[x, y] == STONE.none)
                 {
                     stones[x, y] = flag ? STONE.white : STONE.black;
-                    
+
+                    if (NetStream != null)
+                    {
+                        var pkt = new PlaceStonePacket
+                        {
+                            x = x,
+                            y = y,
+                            isBlack = !flag,      // flag 토글 전이므로 반대
+                            player = MyNick
+                        };
+                        byte[] buf = Packet.Serialize(pkt);
+                        NetStream.Write(buf, 0, buf.Length);
+                    }
+
 
                     flag = !flag;
                     Invalidate();  // 다시 그리기 요청
@@ -184,11 +229,11 @@ namespace Omok
                         string winner = (stones[x, y] == STONE.black) ? "흑" : "백";
                         MessageBox.Show($"{winner} 승리!", "게임 종료", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         gameDone = true;
-                        OnTurnChanged?.Invoke("게임 종료");
+                        //OnTurnChanged?.Invoke("게임 종료");
                         return;
                     }
 
-                    OnTurnChanged?.Invoke(flag ? "( 백 )" : "( 흑 )");
+                   // OnTurnChanged?.Invoke(flag ? "( 백 )" : "( 흑 )");
 
                 }
 
