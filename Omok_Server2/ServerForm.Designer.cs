@@ -31,26 +31,22 @@
             this.txtLog = new System.Windows.Forms.TextBox();
             this.label = new System.Windows.Forms.Label();
             this.btn_server = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.threadList = new System.Windows.Forms.ListView();
-            this.threadName = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.ThreadStatus = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.btn_exit = new System.Windows.Forms.Button();
-            this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtLog
             // 
-            this.txtLog.Location = new System.Drawing.Point(23, 83);
+            this.txtLog.Location = new System.Drawing.Point(11, 83);
             this.txtLog.Multiline = true;
             this.txtLog.Name = "txtLog";
-            this.txtLog.Size = new System.Drawing.Size(320, 344);
+            this.txtLog.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtLog.Size = new System.Drawing.Size(552, 299);
             this.txtLog.TabIndex = 0;
             // 
             // label
             // 
             this.label.AutoSize = true;
-            this.label.Location = new System.Drawing.Point(24, 64);
+            this.label.Location = new System.Drawing.Point(8, 67);
             this.label.Name = "label";
             this.label.Size = new System.Drawing.Size(29, 13);
             this.label.TabIndex = 1;
@@ -65,38 +61,6 @@
             this.btn_server.Text = "서버 시작";
             this.btn_server.UseVisualStyleBackColor = true;
             this.btn_server.Click += new System.EventHandler(this.btn_server_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.threadList);
-            this.groupBox1.Location = new System.Drawing.Point(351, 83);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(200, 311);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Thread 상태";
-            // 
-            // threadList
-            // 
-            this.threadList.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.threadName,
-            this.ThreadStatus});
-            this.threadList.HideSelection = false;
-            this.threadList.Location = new System.Drawing.Point(0, 20);
-            this.threadList.Name = "threadList";
-            this.threadList.Size = new System.Drawing.Size(200, 291);
-            this.threadList.TabIndex = 0;
-            this.threadList.UseCompatibleStateImageBehavior = false;
-            this.threadList.View = System.Windows.Forms.View.Details;
-            // 
-            // threadName
-            // 
-            this.threadName.Text = "Thread 이름";
-            this.threadName.Width = 137;
-            // 
-            // ThreadStatus
-            // 
-            this.ThreadStatus.Text = "상태";
             // 
             // btn_exit
             // 
@@ -114,13 +78,11 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(572, 450);
             this.Controls.Add(this.btn_exit);
-            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btn_server);
             this.Controls.Add(this.label);
             this.Controls.Add(this.txtLog);
             this.Name = "ServerForm";
             this.Text = "서버 관리자";
-            this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -131,10 +93,6 @@
         private System.Windows.Forms.TextBox txtLog;
         private System.Windows.Forms.Label label;
         private System.Windows.Forms.Button btn_server;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.ListView threadList;
-        private System.Windows.Forms.ColumnHeader threadName;
-        private System.Windows.Forms.ColumnHeader ThreadStatus;
         private System.Windows.Forms.Button btn_exit;
     }
 }

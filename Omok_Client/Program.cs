@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Omok_Client.Form;
 
 namespace Omok_Client
 {
@@ -16,7 +17,12 @@ namespace Omok_Client
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Login());
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            var login = new Login();
+            Application.Run(login); // 메인폼은 Login
         }
     }
 }

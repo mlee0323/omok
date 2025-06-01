@@ -40,6 +40,11 @@ namespace Omok_Network
             client?.Close();
         }
 
+        public bool IsConnected()
+        {
+            return client != null && client.Connected;
+        }
+
         private void ReceiveLoop()
         {
             try
@@ -61,23 +66,26 @@ namespace Omok_Network
             }
         }
 
-        public static Packet SendPacketSync(Packet packet)
+        public Packet SendPacketSync(Packet packet)
         {
             try
             {
-                using (TcpClient tempClient = new TcpClient(NetworkConfig.Ip, NetworkConfig.Port))
-                using (NetworkStream tempStream = tempClient.GetStream())
+                if (client == null || !client.Connected)
                 {
-                    byte[] data = Packet.Serialize(packet);
-                    tempStream.Write(data, 0, data.Length);
-
-                    byte[] buffer = new byte[4096];
-                    int read = tempStream.Read(buffer, 0, buffer.Length);
-                    if (read == 0)
-                        return null;
-
-                    return (Packet)Packet.Deserialize(buffer, 0, read);
+                    Console.WriteLine("[NetworkManager] 연결되지 않았습니다.");
+                    return null;
                 }
+
+                byte[] data = Packet.Serialize(packet);
+                stream.Write(data, 0, data.Length);
+                stream.Flush();
+
+                byte[] buffer = new byte[4096];
+                int read = stream.Read(buffer, 0, buffer.Length);
+                if (read == 0)
+                    return null;
+
+                return (Packet)Packet.Deserialize(buffer, 0, read);
             }
             catch (Exception ex)
             {
@@ -86,23 +94,41 @@ namespace Omok_Network
             }
         }
 
-        public static async Task SendPacketAsync(Packet packet)
+        public async Task SendPacketAsync(Packet packet)
         {
             try
             {
-                using (TcpClient tempClient = new TcpClient())
+                if (client == null || !client.Connected)
                 {
-                    await tempClient.ConnectAsync(NetworkConfig.Ip, NetworkConfig.Port);
-                    using (NetworkStream tempStream = tempClient.GetStream())
-                    {
-                        byte[] data = Packet.Serialize(packet);
-                        await tempStream.WriteAsync(data, 0, data.Length);
-                    }
+                    Console.WriteLine("[NetworkManager] 연결되지 않았습니다.");
+                    return;
                 }
+
+                byte[] data = Packet.Serialize(packet);
+                await stream.WriteAsync(data, 0, data.Length);
+                await stream.FlushAsync();
             }
             catch (Exception ex)
             {
                 Console.WriteLine("[NetworkManager] 패킷 비동기 전송 실패: " + ex.Message);
+            }
+        }
+
+        public static Packet SendPacketSyncOnce(Packet packet)
+        {
+            using (TcpClient tempClient = new TcpClient(NetworkConfig.Ip, NetworkConfig.Port))
+            using (NetworkStream tempStream = tempClient.GetStream())
+            {
+                byte[] data = Packet.Serialize(packet);
+                tempStream.Write(data, 0, data.Length);
+                tempStream.Flush();
+
+                byte[] buffer = new byte[4096];
+                int read = tempStream.Read(buffer, 0, buffer.Length);
+                if (read == 0)
+                    return null;
+
+                return (Packet)Packet.Deserialize(buffer, 0, read);
             }
         }
     }

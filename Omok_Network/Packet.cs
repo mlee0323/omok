@@ -7,7 +7,9 @@ namespace Omok_Network
     public enum PacketType
     {
         Authenticate,
-        채팅메시지
+        채팅메시지,
+        RoomJoin,
+        Register,
     }
 
     [Serializable]
@@ -39,17 +41,33 @@ namespace Omok_Network
     [Serializable]
     public class Authenticate_Packet : Packet
     {
-        public string command;  // NAME_CHECK, ID_CHECK 등.
-        public string username;
-        public string password;
-        public string nickname;
-        public string confirm;
+        public string   command;  // NAME_CHECK, ID_CHECK 등.
+        public int      uid;
+        public string   username;
+        public string   password;
+        public string   nickname;
+        public string   confirm;
 
         public string result;   // 서버 응답 결과 저장용 필드
 
         public Authenticate_Packet()
         {
-            this.Type = (int)PacketType.Authenticate;
+            this.Type = PacketType.Authenticate;
+        }
+    }
+
+    [Serializable]
+    public class RoomJoin_Packet : Packet
+    {
+        public int      uid;
+        public string   command;   // "RANDOM_JOIN" 또는 "CODE_JOIN"
+        public string   code;      // 코드 참가일 경우만 사용
+
+        public string   result;    // 서버 응답: "OK", "FULL", "INVALID", "EXPIRED" 등
+
+        public RoomJoin_Packet()
+        {
+            this.Type = PacketType.RoomJoin;
         }
     }
 }

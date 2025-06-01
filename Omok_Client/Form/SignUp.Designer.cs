@@ -1,6 +1,6 @@
-﻿namespace Omok
+﻿namespace Omok_Client.Form
 {
-    partial class SignUpForm
+    partial class SignUp
     {
         /// <summary>
         /// Required designer variable.
@@ -34,7 +34,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.signup_id = new MetroFramework.Controls.MetroTextBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.id_dupl_chk_btn = new MetroFramework.Controls.MetroButton();
+            this.un_dupl_chk_btn = new MetroFramework.Controls.MetroButton();
             this.signup_pw = new MetroFramework.Controls.MetroTextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.signup_btn = new MetroFramework.Controls.MetroButton();
@@ -50,7 +50,7 @@
             this.label1.Font = new System.Drawing.Font("맑은 고딕", 10.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label1.Location = new System.Drawing.Point(23, 74);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(98, 37);
+            this.label1.Size = new System.Drawing.Size(51, 19);
             this.label1.TabIndex = 0;
             this.label1.Text = "닉네임";
             // 
@@ -78,7 +78,7 @@
             this.label2.Font = new System.Drawing.Font("맑은 고딕", 10.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label2.Location = new System.Drawing.Point(23, 174);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(98, 37);
+            this.label2.Size = new System.Drawing.Size(51, 19);
             this.label2.TabIndex = 2;
             this.label2.Text = "아이디";
             // 
@@ -97,18 +97,18 @@
             this.label3.Font = new System.Drawing.Font("맑은 고딕", 10.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label3.Location = new System.Drawing.Point(16, 282);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(125, 37);
+            this.label3.Size = new System.Drawing.Size(65, 19);
             this.label3.TabIndex = 4;
             this.label3.Text = "패스워드";
             // 
-            // id_dupl_chk_btn
+            // un_dupl_chk_btn
             // 
-            this.id_dupl_chk_btn.Location = new System.Drawing.Point(356, 214);
-            this.id_dupl_chk_btn.Name = "id_dupl_chk_btn";
-            this.id_dupl_chk_btn.Size = new System.Drawing.Size(102, 40);
-            this.id_dupl_chk_btn.TabIndex = 4;
-            this.id_dupl_chk_btn.Text = "중복 확인";
-            this.id_dupl_chk_btn.Click += new System.EventHandler(this.id_dupl_chk_btn_Click);
+            this.un_dupl_chk_btn.Location = new System.Drawing.Point(356, 214);
+            this.un_dupl_chk_btn.Name = "un_dupl_chk_btn";
+            this.un_dupl_chk_btn.Size = new System.Drawing.Size(102, 40);
+            this.un_dupl_chk_btn.TabIndex = 4;
+            this.un_dupl_chk_btn.Text = "중복 확인";
+            this.un_dupl_chk_btn.Click += new System.EventHandler(this.un_dupl_chk_btn_Click);
             // 
             // signup_pw
             // 
@@ -125,7 +125,7 @@
             this.label4.Font = new System.Drawing.Font("맑은 고딕", 10.125F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
             this.label4.Location = new System.Drawing.Point(16, 411);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(188, 37);
+            this.label4.Size = new System.Drawing.Size(98, 19);
             this.label4.TabIndex = 7;
             this.label4.Text = "패스워드 확인";
             // 
@@ -162,7 +162,7 @@
             this.signup_pw2_warning_lb.ForeColor = System.Drawing.Color.Red;
             this.signup_pw2_warning_lb.Location = new System.Drawing.Point(23, 498);
             this.signup_pw2_warning_lb.Name = "signup_pw2_warning_lb";
-            this.signup_pw2_warning_lb.Size = new System.Drawing.Size(0, 25);
+            this.signup_pw2_warning_lb.Size = new System.Drawing.Size(0, 13);
             this.signup_pw2_warning_lb.TabIndex = 9;
             // 
             // signup_pw_warning_lb
@@ -171,12 +171,12 @@
             this.signup_pw_warning_lb.ForeColor = System.Drawing.Color.Red;
             this.signup_pw_warning_lb.Location = new System.Drawing.Point(23, 369);
             this.signup_pw_warning_lb.Name = "signup_pw_warning_lb";
-            this.signup_pw_warning_lb.Size = new System.Drawing.Size(0, 25);
+            this.signup_pw_warning_lb.Size = new System.Drawing.Size(0, 13);
             this.signup_pw_warning_lb.TabIndex = 10;
             // 
             // SignUpForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(491, 706);
             this.Controls.Add(this.signup_pw_warning_lb);
@@ -186,7 +186,7 @@
             this.Controls.Add(this.signup_btn);
             this.Controls.Add(this.signup_pw);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.id_dupl_chk_btn);
+            this.Controls.Add(this.un_dupl_chk_btn);
             this.Controls.Add(this.signup_id);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.signup_pw2);
@@ -210,7 +210,7 @@
         private System.Windows.Forms.Label label2;
         private MetroFramework.Controls.MetroTextBox signup_id;
         private System.Windows.Forms.Label label3;
-        private MetroFramework.Controls.MetroButton id_dupl_chk_btn;
+        private MetroFramework.Controls.MetroButton un_dupl_chk_btn;
         private MetroFramework.Controls.MetroTextBox signup_pw;
         private System.Windows.Forms.Label label4;
         private MetroFramework.Controls.MetroButton signup_btn;

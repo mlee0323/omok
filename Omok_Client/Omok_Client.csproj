@@ -6,13 +6,15 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{0E752A43-B937-4A33-861A-CC71F7BE6B63}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Omok</RootNamespace>
-    <AssemblyName>Omok</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <RootNamespace>Omok_Client</RootNamespace>
+    <AssemblyName>Omok_Client</AssemblyName>
+    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PreferNativeArm64>true</PreferNativeArm64>
     <Deterministic>true</Deterministic>
+    <LangVersion>9.0</LangVersion>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -35,6 +37,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.ComponentModel.Composition.Registration" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -47,48 +52,59 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChatForm.cs">
+    <Compile Include="Control\ChatForm.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ChatForm.Designer.cs">
+    <Compile Include="Control\ChatForm.Designer.cs">
       <DependentUpon>ChatForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameMainScreen.cs">
+    <Compile Include="Form\InGame.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GameMainScreen.Designer.cs">
-      <DependentUpon>GameMainScreen.cs</DependentUpon>
+    <Compile Include="Form\InGame.Designer.cs">
+      <DependentUpon>InGame.cs</DependentUpon>
     </Compile>
-    <Compile Include="GoBoardControl.cs">
+    <Compile Include="Control\GoBoardControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GoBoardControl.Designer.cs">
+    <Compile Include="Control\GoBoardControl.Designer.cs">
       <DependentUpon>GoBoardControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Login.cs">
+    <Compile Include="Form\Lobby.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Login.Designer.cs">
+    <Compile Include="Form\Lobby.Designer.cs">
+      <DependentUpon>Lobby.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form\Login.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form\Login.Designer.cs">
       <DependentUpon>Login.cs</DependentUpon>
     </Compile>
+    <Compile Include="Network\Client.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SignUpForm.cs">
+    <Compile Include="Form\SignUp.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SignUpForm.Designer.cs">
-      <DependentUpon>SignUpForm.cs</DependentUpon>
+    <Compile Include="Form\SignUp.Designer.cs">
+      <DependentUpon>SignUp.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="ChatForm.resx">
+    <Compile Include="Utiil\Session.cs" />
+    <EmbeddedResource Include="Control\ChatForm.resx">
       <DependentUpon>ChatForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GameMainScreen.resx">
-      <DependentUpon>GameMainScreen.cs</DependentUpon>
+    <EmbeddedResource Include="Form\InGame.resx">
+      <DependentUpon>InGame.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GoBoardControl.resx">
+    <EmbeddedResource Include="Control\GoBoardControl.resx">
       <DependentUpon>GoBoardControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Login.resx">
+    <EmbeddedResource Include="Form\Lobby.resx">
+      <DependentUpon>Lobby.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Form\Login.resx">
       <DependentUpon>Login.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -99,9 +115,10 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="SignUpForm.resx">
-      <DependentUpon>SignUpForm.cs</DependentUpon>
+    <EmbeddedResource Include="Form\SignUp.resx">
+      <DependentUpon>SignUp.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

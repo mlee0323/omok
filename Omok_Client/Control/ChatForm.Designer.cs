@@ -1,4 +1,4 @@
-﻿namespace Omok
+﻿namespace Omok_Client.Control
 {
     partial class ChatForm
     {
