@@ -4,17 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0E752A43-B937-4A33-861A-CC71F7BE6B63}</ProjectGuid>
+    <ProjectGuid>{D60966B9-C7C4-4136-A0EA-E05A4C795D34}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>Omok_Client</RootNamespace>
-    <AssemblyName>Omok_Client</AssemblyName>
-    <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
+    <RootNamespace>Omok_Server2</RootNamespace>
+    <AssemblyName>Omok_Server2</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <PreferNativeArm64>true</PreferNativeArm64>
     <Deterministic>true</Deterministic>
     <LangVersion>9.0</LangVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -37,9 +36,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.Composition.Registration" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -52,61 +48,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Control\ChatForm.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Control\ChatForm.Designer.cs">
-      <DependentUpon>ChatForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form\InGame.cs">
+    <Compile Include="Constant\CommandType.cs" />
+    <Compile Include="Controllers\GameController.cs" />
+    <Compile Include="Controllers\RoomController.cs" />
+    <Compile Include="Core\ThreadManager.cs" />
+    <Compile Include="Helper\CommandParser.cs" />
+    <Compile Include="Managers\RoomManager.cs" />
+    <Compile Include="Data\Room.cs" />
+    <Compile Include="Network\ClientHandler.cs" />
+    <Compile Include="Data\User.cs" />
+    <Compile Include="Models\UserModel.cs" />
+    <Compile Include="Network\ServerCore.cs" />
+    <Compile Include="ServerForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form\InGame.Designer.cs">
-      <DependentUpon>InGame.cs</DependentUpon>
+    <Compile Include="ServerForm.Designer.cs">
+      <DependentUpon>ServerForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Control\GoBoardControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="Control\GoBoardControl.Designer.cs">
-      <DependentUpon>GoBoardControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form\Lobby.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form\Lobby.Designer.cs">
-      <DependentUpon>Lobby.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Form\Login.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form\Login.Designer.cs">
-      <DependentUpon>Login.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Network\Client.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Form\SignUp.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form\SignUp.Designer.cs">
-      <DependentUpon>SignUp.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Utiil\Session.cs" />
-    <EmbeddedResource Include="Control\ChatForm.resx">
-      <DependentUpon>ChatForm.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form\InGame.resx">
-      <DependentUpon>InGame.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Control\GoBoardControl.resx">
-      <DependentUpon>GoBoardControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form\Lobby.resx">
-      <DependentUpon>Lobby.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form\Login.resx">
-      <DependentUpon>Login.cs</DependentUpon>
-    </EmbeddedResource>
+    <Compile Include="Controllers\AuthController.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -115,10 +76,9 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Form\SignUp.resx">
-      <DependentUpon>SignUp.cs</DependentUpon>
+    <EmbeddedResource Include="ServerForm.resx">
+      <DependentUpon>ServerForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -134,27 +94,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MetroFramework">
-      <Version>1.2.0.3</Version>
-    </PackageReference>
+    <PackageReference Include="MetroFramework" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Omok_Network\Omok_Network.csproj">
       <Project>{0f5a826c-e14b-4f02-8010-a3b47cb020e2}</Project>
       <Name>Omok_Network</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Omok_Server2\Omok_Server2.csproj">
-      <Project>{d60966b9-c7c4-4136-a0ea-e05a4c795d34}</Project>
-      <Name>Omok_Server2</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Omok_Server\Omok_Server.csproj">
-      <Project>{7b20e988-3058-4185-a554-ca327c4b22be}</Project>
-      <Name>Omok_Server</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Pack_Server\Pack_Server.csproj">
-      <Project>{b6d19a5a-f3bf-46ac-b259-f71ef817a230}</Project>
-      <Name>Pack_Server</Name>
-    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="DB\games.txt" />
+    <Content Include="DB\history.txt" />
+    <Content Include="DB\user_stats.txt" />
+    <Content Include="DB\user.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

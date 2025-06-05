@@ -5,7 +5,7 @@ using System.Threading;
 using System.Windows.Forms;
 using Pack_Server;
 
-namespace Omok
+namespace Omok_Client.Control
 {
     public partial class ChatForm : UserControl
     {

@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Omok_Client.Form;
 
-namespace Omok_Client
+namespace Omok_Server2
 {
     internal static class Program
     {
@@ -17,12 +16,7 @@ namespace Omok_Client
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-
-            var login = new Login();
-            Application.Run(login); // 메인폼은 Login
+            Application.Run(new ServerForm());
         }
     }
 }
