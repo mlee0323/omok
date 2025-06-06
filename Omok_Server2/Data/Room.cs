@@ -32,11 +32,15 @@ namespace Omok_Server2.Data
         // 게임 관련 상태
         // ───────────────────────────────
         private bool gameStarted = false;
-        private int turnIndex = 0;
+        // private int turnIndex = 0;
         private string currentTurnTeam = "A";
         private List<ClientHandler> teamAOrder = new();
         private List<ClientHandler> teamBOrder = new();
         private int[,] board = new int[19, 19]; // 0: 없음, 1: A, 2: B
+
+        // 팀별로 인덱스 따로 관리
+        private int indexA = -1;
+        private int indexB = -1;
 
         // 턴 타이머
         private System.Timers.Timer? turnTimer;
@@ -132,11 +136,34 @@ namespace Omok_Server2.Data
             teamBOrder = GetTeamMembers(2).OrderBy(_ => Guid.NewGuid()).ToList();
 
             currentTurnTeam = new Random().Next(2) == 0 ? "A" : "B";
+
+
             blackTeam = currentTurnTeam;  // 선공팀은 흑돌로 고정
             whiteTeam = (blackTeam == "A") ? "B" : "A";
 
-            Broadcast($"GAME_START|{blackTeam}"); // 흑돌 팀을 알림
-            AdvanceTurn(); // 바로 턴 시작
+            indexA = -1;
+            indexB = -1;
+
+            // 선공팀에게 바로 첫 턴을 부여
+            if (currentTurnTeam == "A")
+            {
+                indexA = 0; // A팀 리스트의 0번 플레이어가 첫 턴
+                var firstA = teamAOrder[indexA];
+                Broadcast($"GAME_START|A");
+                Broadcast($"TURN_INFO|A|0|{firstA.getNickname()}|{stoneCount}");
+            }
+            else /* currentTurnTeam == "B" */
+            {
+                indexB = 0; // B팀 리스트의 0번 플레이어가 첫 턴
+                var firstB = teamBOrder[indexB];
+                Broadcast($"GAME_START|B");
+                Broadcast($"TURN_INFO|B|0|{firstB.getNickname()}|{stoneCount}");
+            }
+
+            StartTurnTimer();
+
+            //Broadcast($"GAME_START|{blackTeam}"); // 흑돌 팀을 알림
+            //AdvanceTurn(); // 바로 턴 시작
         }
 
 
@@ -144,7 +171,7 @@ namespace Omok_Server2.Data
         {
             gameStarted = false;
             StopTurnTimer();
-            turnIndex = 0;
+            //turnIndex = 0;
             currentTurnTeam = "A";
             board = new int[19, 19];
             teamAOrder.Clear();
@@ -156,22 +183,51 @@ namespace Omok_Server2.Data
         // ───────────────────────────────
         // 턴 관련 처리
         // ───────────────────────────────
-        public ClientHandler? GetCurrentTurnPlayer()
+        //public ClientHandler? GetCurrentTurnPlayer()
+        //{
+        //    var list = currentTurnTeam == "A" ? teamAOrder : teamBOrder;
+        //    return list.Count > 0 ? list[turnIndex % list.Count] : null;
+        //}
+        public ClientHandler? GetCurrentTurnPlayerByTeam()
         {
-            var list = currentTurnTeam == "A" ? teamAOrder : teamBOrder;
-            return list.Count > 0 ? list[turnIndex % list.Count] : null;
+            if (currentTurnTeam == "A")
+            {
+                if (teamAOrder.Count == 0) return null;
+                return teamAOrder[indexA];
+            }
+            else
+            {
+                if (teamBOrder.Count == 0) return null;
+                return teamBOrder[indexB];
+            }
         }
 
         public void AdvanceTurn()
         {
             StopTurnTimer();
-            turnIndex++;
+            //turnIndex++;
             currentTurnTeam = (currentTurnTeam == "A") ? "B" : "A";
 
-            var currentPlayer = GetCurrentTurnPlayer();
-            var nickname = currentPlayer?.getNickname() ?? "?";
-            Broadcast($"TURN_INFO|{currentTurnTeam}|{turnIndex}|{nickname}|{stoneCount}");
+            ClientHandler? currentPlayer = null;
+            if (currentTurnTeam == "A")
+            {
+                // A 팀의 경우
+                if (teamAOrder.Count == 0) return;
+                indexA = (indexA + 1) % teamAOrder.Count;
+                currentPlayer = teamAOrder[indexA];
+            }
+            else 
+            {
+                if (teamBOrder.Count == 0) return;
+                indexB = (indexB + 1) % teamBOrder.Count;
+                currentPlayer = teamBOrder[indexB];
+            }
 
+
+            //var currentPlayer = GetCurrentTurnPlayer();
+            var nickname = currentPlayer?.getNickname() ?? "?";
+            //Broadcast($"TURN_INFO|{currentTurnTeam}|{turnIndex}|{nickname}|{stoneCount}");
+            Broadcast($"TURN_INFO|{currentTurnTeam}|{/*turnNumber*/stoneCount}|{nickname}|{stoneCount}");
 
 
             StartTurnTimer();

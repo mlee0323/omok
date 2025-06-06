@@ -27,6 +27,7 @@ namespace Omok_Client.Form
         private string currentTurnTeam = "";  // 현재 턴 팀
         private int currentTurnIndex = 0;            // 팀 내 순번
 
+
         private GoBoardControl board; // 바둑판 컨트롤
 
         private System.Windows.Forms.Timer turnTimer;
@@ -50,6 +51,7 @@ namespace Omok_Client.Form
 
             // 서버에서 팀 정보 받아오기
             LoadTeamInfoFromServer();
+            MySelfLabel.Text = Session.Nickname;
         }
         private void InGame_Load(object sender, EventArgs e)
         {
