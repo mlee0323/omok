@@ -36,6 +36,13 @@ namespace Omok_Network
                 return new BinaryFormatter().Deserialize(ms);
             }
         }
+
+        public const string CHAT = "CHAT";
+
+        public static string CreateChatPacket(string pk, string nickname, string message)
+        {
+            return $"{CHAT}|{pk}|{nickname}|{message}";
+        }
     }
 
     [Serializable]

@@ -7,6 +7,8 @@ using Omok_Server2.Constant;
 using Omok_Server2.Helper;
 using Omok_Server2.Data;
 using Omok_Server2.Network;
+using Omok_Network;
+using Omok_Server2.Managers;
 
 namespace Omok_Server2
 {
@@ -20,6 +22,8 @@ namespace Omok_Server2
         private string userpk;
         private string nickname;
         private readonly Action<string> logCallback;
+
+        public string Nickname { get { return nickname; } }
 
         public ClientHandler(TcpClient client, Action<string> logCallback)
         {
@@ -36,6 +40,19 @@ namespace Omok_Server2
             if (tokens.Length == 0) return;
 
             string rawCmd = tokens[0];
+            
+            // 채팅 패킷 처리
+            if (rawCmd == "CHAT" && tokens.Length >= 4)
+            {
+                if (string.IsNullOrEmpty(userpk))
+                {
+                    userpk = tokens[1];
+                    ClientManager.Instance.AddClient(userpk, this);
+                }
+                ChatController.Instance.HandleChat(tokens[1], tokens[3]);
+                return;
+            }
+
             CommandType cmd = CommandParser.Parse(rawCmd);
             string category = CommandParser.GetCategory(cmd);
             string response = "";
@@ -49,6 +66,7 @@ namespace Omok_Server2
                 case "Room":
                     userpk = tokens[1];
                     nickname = tokens[2];
+                    ClientManager.Instance.AddClient(userpk, this);
                     response = RoomController.Handle(cmd, tokens, this);
                     break;
 
