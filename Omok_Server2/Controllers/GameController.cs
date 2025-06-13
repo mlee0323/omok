@@ -111,7 +111,7 @@ namespace Omok_Server2.Controllers
             var room = RoomManager.GetRoomByUserPk(pk);
             if (room == null) return "STONE_PUT_FAIL|NO_ROOM";
 
-            var current = room.GetCurrentTurnPlayer();
+            var current = room.GetCurrentTurnPlayerByTeam();
             if (client != current) return "STONE_PUT_FAIL|NOT_YOUR_TURN";
 
             int team = room.GetTeam(client) ?? 0;
