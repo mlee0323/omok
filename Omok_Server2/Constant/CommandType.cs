@@ -32,6 +32,9 @@ namespace Omok_Server2.Constant
         GAME_START,
         STONE_PUT,
 
+        // CHAT
+        CHAT,
+
         INVALID_COMMAND,
         INVALID_FORMAT,
         INVALID_PACKET

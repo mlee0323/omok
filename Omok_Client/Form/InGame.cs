@@ -29,6 +29,7 @@ namespace Omok_Client.Form
 
 
         private GoBoardControl board; // 바둑판 컨트롤
+        private ChatForm chatForm; // 채팅 폼
 
         private System.Windows.Forms.Timer turnTimer;
         private int remainingSeconds = 30;
@@ -42,12 +43,13 @@ namespace Omok_Client.Form
             // 초기에는 비활성화
             btn_move.Enabled = false;
             btn_ready.Enabled = false;
-            txt_chat.Enabled = false;
-            txt_msg.Enabled = false;
             pn_board.Enabled = false;
 
             // 바둑판 로드
             LoadBadukpan();
+
+            // 채팅 폼 로드
+            LoadChatForm();
 
             // 서버에서 팀 정보 받아오기
             LoadTeamInfoFromServer();
@@ -86,8 +88,6 @@ namespace Omok_Client.Form
 
             btn_move.Enabled = true;
             btn_ready.Enabled = true;
-            txt_chat.Enabled = true;
-            txt_msg.Enabled = true;
             pn_board.Enabled = true;
             isInitialized = true;
         }
@@ -192,8 +192,6 @@ namespace Omok_Client.Form
             }));
         }
 
-
-
         private void LoadBadukpan()
         {
             // 바둑판 컨트롤 로드
@@ -203,6 +201,23 @@ namespace Omok_Client.Form
             pn_board.Controls.Add(board);
         }
 
+        private void LoadChatForm()
+        {
+            try
+            {
+                chatForm = new ChatForm();
+                chatForm.Dock = DockStyle.Right;
+                chatForm.Width = 310;
+                chatForm.Visible = true;
+                chatForm.BackColor = Color.White;
+                this.Controls.Add(chatForm);
+                chatForm.BringToFront();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"채팅 폼 로드 중 오류 발생: {ex.Message}");
+            }
+        }
         private void ListenLoop()
         {
             string msg = string.Empty;
@@ -223,9 +238,8 @@ namespace Omok_Client.Form
                         HandleStonePut(msg);
                     else if (msg.StartsWith("GAME_OVER"))
                         HandleGameOver(msg);
-                    //else if (msg.StartsWith("CHAT"))
-                    //    HandleChat(msg);
-
+                    else if (msg.StartsWith("CHAT"))
+                        HandleChat(msg);
 
                     // 기타 메시지 처리...
                 }
@@ -273,6 +287,29 @@ namespace Omok_Client.Form
             };
         }
 
+        private void HandleChat(string msg)
+        {
+            try
+            {
+                string[] tokens = msg.Split('|');
+                if (tokens.Length >= 4)
+                {
+                    string nickname = tokens[2];
+                    string message = tokens[3];
+                    this.Invoke(new Action(() =>
+                    {
+                        if (chatForm != null)
+                        {
+                            chatForm.AppendChatMessage(nickname, message);
+                        }
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"채팅 메시지 처리 중 오류 발생: {ex.Message}");
+            }
+        }
 
         // 버튼 처리
         private void btn_move_Click(object sender, EventArgs e)
@@ -298,13 +335,9 @@ namespace Omok_Client.Form
 
         private void AppendSystemMessage(string message)
         {
-            if (txt_chat.InvokeRequired)
+            if (chatForm != null)
             {
-                txt_chat.Invoke(new Action(() => txt_chat.AppendText($"시스템 > {message}\r\n")));
-            }
-            else
-            {
-                txt_chat.AppendText($"시스템 > {message}\r\n");
+                chatForm.AppendSystemMessage(message);
             }
         }
 

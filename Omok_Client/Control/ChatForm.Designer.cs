@@ -20,7 +20,7 @@
             base.Dispose(disposing);
         }
 
-        #region Windows Form Designer generated code
+        #region Component Designer generated code
 
         /// <summary>
         /// Required method for Designer support - do not modify
@@ -28,65 +28,59 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.txt_all = new System.Windows.Forms.TextBox();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.txt_Send = new System.Windows.Forms.TextBox();
-            this.btn_Send = new System.Windows.Forms.Button();
+            this.txt_chat = new MetroFramework.Controls.MetroTextBox();
+            this.txt_msg = new MetroFramework.Controls.MetroTextBox();
+            this.btn_send = new MetroFramework.Controls.MetroButton();
             this.SuspendLayout();
             // 
-            // txt_all
+            // txt_chat
             // 
-            this.txt_all.Location = new System.Drawing.Point(3, 3);
-            this.txt_all.Multiline = true;
-            this.txt_all.Name = "txt_all";
-            this.txt_all.Size = new System.Drawing.Size(346, 742);
-            this.txt_all.TabIndex = 3;
+            this.txt_chat.Location = new System.Drawing.Point(0, 4);
+            this.txt_chat.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txt_chat.Multiline = true;
+            this.txt_chat.Name = "txt_chat";
+            this.txt_chat.ReadOnly = true;
+            this.txt_chat.Size = new System.Drawing.Size(425, 784);
+            this.txt_chat.TabIndex = 0;
             // 
-            // contextMenuStrip1
+            // txt_msg
             // 
-            this.contextMenuStrip1.ImageScalingSize = new System.Drawing.Size(24, 24);
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
+            this.txt_msg.Location = new System.Drawing.Point(0, 792);
+            this.txt_msg.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txt_msg.Multiline = true;
+            this.txt_msg.Name = "txt_msg";
+            this.txt_msg.Size = new System.Drawing.Size(315, 45);
+            this.txt_msg.TabIndex = 1;
+            this.txt_msg.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txt_msg_KeyPress);
             // 
-            // txt_Send
+            // btn_send
             // 
-            this.txt_Send.Location = new System.Drawing.Point(4, 752);
-            this.txt_Send.Name = "txt_Send";
-            this.txt_Send.Size = new System.Drawing.Size(345, 28);
-            this.txt_Send.TabIndex = 5;
-            this.txt_Send.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txt_Send_keyDown);
-            // 
-            // btn_Send
-            // 
-            this.btn_Send.Location = new System.Drawing.Point(4, 787);
-            this.btn_Send.Name = "btn_Send";
-            this.btn_Send.Size = new System.Drawing.Size(345, 62);
-            this.btn_Send.TabIndex = 6;
-            this.btn_Send.Text = "보내기";
-            this.btn_Send.UseVisualStyleBackColor = true;
-            this.btn_Send.Click += new System.EventHandler(this.btn_Send_Click);
+            this.btn_send.Location = new System.Drawing.Point(323, 792);
+            this.btn_send.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.btn_send.Name = "btn_send";
+            this.btn_send.Size = new System.Drawing.Size(100, 45);
+            this.btn_send.TabIndex = 2;
+            this.btn_send.Text = "전송";
+            this.btn_send.Click += new System.EventHandler(this.btn_send_Click);
             // 
             // ChatForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.Controls.Add(this.btn_Send);
-            this.Controls.Add(this.txt_Send);
-            this.Controls.Add(this.txt_all);
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.Controls.Add(this.btn_send);
+            this.Controls.Add(this.txt_msg);
+            this.Controls.Add(this.txt_chat);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "ChatForm";
-            this.Size = new System.Drawing.Size(352, 918);
+            this.Size = new System.Drawing.Size(429, 842);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-        private System.Windows.Forms.TextBox txt_all;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.TextBox txt_Send;
-        private System.Windows.Forms.Button btn_Send;
+
+        private MetroFramework.Controls.MetroTextBox txt_chat;
+        private MetroFramework.Controls.MetroTextBox txt_msg;
+        private MetroFramework.Controls.MetroButton btn_send;
     }
 }
