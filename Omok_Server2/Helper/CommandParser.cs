@@ -26,6 +26,7 @@ namespace Omok_Server2.Helper
                 "GAME_READY" => CommandType.GAME_READY,
                 "GAME_START" => CommandType.GAME_START,
                 "STONE_PUT" => CommandType.STONE_PUT,
+                "SKILL_USE" => CommandType.SKILL_USE,
                 _ => CommandType.Unknown
             };
         }
@@ -42,7 +43,8 @@ namespace Omok_Server2.Helper
                 CommandType.GAME_READY or
                 CommandType.EXIT_ROOM or
                 CommandType.GAME_START or
-                CommandType.STONE_PUT
+                CommandType.STONE_PUT or
+                CommandType.SKILL_USE
                 => "Game",
                 
                 _ => "Unknown"
