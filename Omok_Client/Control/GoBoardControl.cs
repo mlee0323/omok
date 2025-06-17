@@ -16,7 +16,7 @@ namespace Omok_Client.Control
     {
         public enum STONE { none, black, white }
         private STONE[,] stones = new STONE[19, 19];
-        private STONE curStone = STONE.black;
+        // private STONE curStone = STONE.black;
         private int gridSize = 30;
         private bool gameStarted = false;
         private bool gameDone = false;
@@ -64,8 +64,11 @@ namespace Omok_Client.Control
             if (x < 0 || x >= 19 || y < 0 || y >= 19) return;
             if (stones[x, y] != STONE.none) return;
 
-            stones[x, y] = curStone;
-            curStone = (curStone == STONE.black) ? STONE.white : STONE.black;
+            //stones[x, y] = curStone;
+            //curStone = (curStone == STONE.black) ? STONE.white : STONE.black;
+            //Invalidate();
+
+            stones[x,y] = (team == 1) ? STONE.black : STONE.white;
             Invalidate();
         }
 

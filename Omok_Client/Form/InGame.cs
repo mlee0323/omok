@@ -27,6 +27,7 @@ namespace Omok_Client.Form
         private string currentTurnTeam = "";  // 현재 턴 팀
         private int currentTurnIndex = 0;            // 팀 내 순번
 
+        private int timeAddUse = 2;
 
         private GoBoardControl board; // 바둑판 컨트롤
         private ChatForm chatForm; // 채팅 폼
@@ -54,6 +55,10 @@ namespace Omok_Client.Form
             // 서버에서 팀 정보 받아오기
             LoadTeamInfoFromServer();
             MySelfLabel.Text = Session.Nickname;
+
+            btn_skill_2.Text = $"시간 늘리기 ({timeAddUse})";
+            btn_skill_2.Enabled = true;
+
         }
         private void InGame_Load(object sender, EventArgs e)
         {
@@ -141,6 +146,8 @@ namespace Omok_Client.Form
                 remainingSeconds = 30;
                 lbl_timer.Text = $"{remainingSeconds}초";
                 turnTimer?.Start();
+
+                btn_skill_2.Enabled = (nickname == MySelfLabel.Text) && (timeAddUse > 0);
             }));
         }
 
@@ -386,5 +393,20 @@ namespace Omok_Client.Form
             }
         }
 
+        private void btn_skill_2_Click(object sender, EventArgs e)
+        {
+
+
+            if (timeAddUse <= 0)
+                return;
+
+            remainingSeconds += 15;
+            timeAddUse--;
+
+            btn_skill_2.Text = $"시간 늘리기 ({timeAddUse})";
+
+            if (timeAddUse == 0)
+                btn_skill_2.Enabled = false;
+        }
     }
 }
