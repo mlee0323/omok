@@ -159,18 +159,25 @@ namespace Omok_Client.Form
         {
             string[] tokens = msg.Split('|');
             string winner = tokens[1];
-            if (winner == "1")
-                winner = "A";
-            else if (winner == "2")
-                winner = "B";
-            else
-                winner = "Unknown";
-
+            
             gameStarted = false;
 
             Invoke(new Action(() =>
             {
-                AppendSystemMessage($"{winner} 팀이 승리했습니다!");
+                if (winner == "0")
+                {
+                    AppendSystemMessage("게임이 종료되었습니다.");
+                }
+                else
+                {
+                    if (winner == "1")
+                        winner = "A";
+                    else if (winner == "2")
+                        winner = "B";
+                    else
+                        winner = "Unknown";
+                    AppendSystemMessage($"{winner} 팀이 승리했습니다!");
+                }
                 turnTimer?.Stop();
             }));
 
@@ -240,6 +247,8 @@ namespace Omok_Client.Form
                         HandleGameOver(msg);
                     else if (msg.StartsWith("CHAT"))
                         HandleChat(msg);
+                    else if (msg.StartsWith("SKILL_USE|"))
+                        HandleSkillUse(msg);
 
                     // 기타 메시지 처리...
                 }
@@ -311,6 +320,34 @@ namespace Omok_Client.Form
             }
         }
 
+        private void HandleSkillUse(string msg)
+        {
+            string[] tokens = msg.Split('|');
+            string pk = tokens[1];
+            string nickname = tokens[2];
+            int skillType = int.Parse(tokens[3]);
+
+            if (skillType == 3) // 바둑판 어지르기 스킬
+            {
+                Invoke(new Action(() =>
+                {
+                    // 바둑판 랜덤 배치
+                    board.RandomizeBoard();
+                    
+                    // 채팅창에 메시지 표시
+                    if (chatForm != null)
+                    {
+                        chatForm.AppendSystemMessage($"{nickname}님이 바둑판을 어지르고 갔습니다!");
+                    }
+
+                    // 게임 종료 처리
+                    gameStarted = false;
+                    turnTimer?.Stop();
+                    board.EndGame();
+                }));
+            }
+        }
+
         // 버튼 처리
         private void btn_move_Click(object sender, EventArgs e)
         {
@@ -331,6 +368,14 @@ namespace Omok_Client.Form
             Client.Send($"EXIT_ROOM|{Session.Pk}|{Session.Nickname}|{roomCode}");
             Session.RoomCode = string.Empty;
             this.Close();
+        }
+
+        private void btn_skill_3_Click(object sender, EventArgs e)
+        {
+            if (!gameStarted) return;
+            
+            // 서버에 스킬 사용 메시지 전송
+            Client.Send($"SKILL_USE|{Session.Pk}|{Session.Nickname}|{roomCode}|3");
         }
 
         private void AppendSystemMessage(string message)

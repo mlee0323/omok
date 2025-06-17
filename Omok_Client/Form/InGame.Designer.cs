@@ -96,6 +96,7 @@ namespace Omok_Client.Form
             this.btn_skill_3.Size = new System.Drawing.Size(207, 48);
             this.btn_skill_3.TabIndex = 4;
             this.btn_skill_3.Text = "엎기";
+            this.btn_skill_3.Click += new System.EventHandler(this.btn_skill_3_Click);
             // 
             // showTurnLabel
             // 

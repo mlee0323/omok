@@ -69,6 +69,58 @@ namespace Omok_Client.Control
             Invalidate();
         }
 
+        private int CountStones()
+        {
+            int count = 0;
+            for (int i = 0; i < 19; i++)
+            {
+                for (int j = 0; j < 19; j++)
+                {
+                    if (stones[i, j] != STONE.none)
+                    {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+        public void RandomizeBoard()
+        {
+            Random random = new Random();
+            int currentStoneCount = CountStones();
+            
+            // 현재 돌들의 색상 정보 저장
+            List<STONE> currentStones = new List<STONE>();
+            for (int i = 0; i < 19; i++)
+            {
+                for (int j = 0; j < 19; j++)
+                {
+                    if (stones[i, j] != STONE.none)
+                    {
+                        currentStones.Add(stones[i, j]);
+                    }
+                }
+            }
+            
+            // 기존 돌 제거
+            stones = new STONE[19, 19];
+            
+            // 현재 돌 개수만큼 랜덤 배치 (색상 유지)
+            for (int i = 0; i < currentStones.Count; i++)
+            {
+                int x, y;
+                do
+                {
+                    x = random.Next(0, 19);
+                    y = random.Next(0, 19);
+                } while (stones[x, y] != STONE.none);
+
+                stones[x, y] = currentStones[i];
+            }
+            Invalidate();
+        }
+
         protected override void OnMouseClick(MouseEventArgs e)
         {
             base.OnMouseClick(e);

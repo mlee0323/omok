@@ -26,6 +26,8 @@ namespace Omok_Server2.Controllers
                     return HandleGameReady(tokens, client);
                 case CommandType.STONE_PUT:
                     return HandleStonePut(tokens, client);
+                case CommandType.SKILL_USE:
+                    return HandleSkillUse(tokens, client);
             }
             return "INVALID_COMMAND";
         }
@@ -132,6 +134,31 @@ namespace Omok_Server2.Controllers
             }
 
             return "STONE_PUT_OK";
+        }
+
+        private static string HandleSkillUse(string[] tokens, ClientHandler client)
+        {
+            if (tokens.Length < 5) return "SKILL_USE_FAIL|FORMAT";
+
+            string pk = tokens[1];
+            string nickname = tokens[2];
+            string roomCode = tokens[3];
+            int skillType = int.Parse(tokens[4]);
+
+            var room = RoomManager.GetRoom(roomCode);
+            if (room == null) return "SKILL_USE_FAIL|NO_ROOM";
+
+            // 스킬 사용 메시지를 모든 클라이언트에게 브로드캐스트
+            room.Broadcast($"SKILL_USE|{pk}|{nickname}|{skillType}");
+
+            // 바둑판 엎기 스킬인 경우 게임 종료
+            if (skillType == 3)
+            {
+                room.Broadcast($"GAME_OVER|0"); // 0은 무승부를 의미
+                room.ResetGame();
+            }
+
+            return "SKILL_USE_OK";
         }
 
     }

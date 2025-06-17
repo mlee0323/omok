@@ -31,6 +31,9 @@ namespace Omok_Server2.Constant
         GAME_READY_OK,
         GAME_START,
         STONE_PUT,
+        SKILL_USE,
+        SKILL_USE_FAIL,
+        SKILL_USE_OK,
 
         // CHAT
         CHAT,
