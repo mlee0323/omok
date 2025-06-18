@@ -15,5 +15,13 @@ namespace Omok_Client.Util
         public static string RoomCode { get; set; } = string.Empty;
 
         public static int Team { get; set; } = -1;
+
+        public static void Clear()
+        {
+            Pk = 0;
+            Nickname = string.Empty;
+            RoomCode = string.Empty;
+            Team = 0;
+        }
     }
 }

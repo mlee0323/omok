@@ -18,7 +18,6 @@ namespace Omok_Client.Form
         public Lobby()
         {
             InitializeComponent();
-            this.FormClosing += Lobby_FormClosing;
             lbl_username.Text = Session.Nickname;
             UserLoggedOut = false;
             
@@ -158,43 +157,41 @@ namespace Omok_Client.Form
 
         private void btn_logout_Click(object sender, EventArgs e)
         {
-            this.Hide();
+            Client.Disconnect();
 
             // 세션 초기화
-            Session.Pk = 0;
-            Session.Nickname = "";
-            Session.RoomCode = "";
-
+            Session.Clear();
             UserLoggedOut = true;
 
             // 현재 Lobby 폼은 완전히 종료
+            this.DialogResult = DialogResult.Retry;
             this.Close();
         }
 
         private void btn_exit_Click(object sender, EventArgs e)
         {
-            this.Hide();
+            Client.Disconnect();
 
             // 세션 초기화
-            Session.Pk = 0;
-            Session.Nickname = "";
-            Session.RoomCode = "";
+            Session.Clear();
+            UserLoggedOut = true;
 
+            this.DialogResult = DialogResult.Abort;
             this.Close();
-
-            Application.Exit();
         }
 
         private void OpenGame(string roomCode)
         {
             this.Hide();
-            var ingame = new InGame(roomCode);
-            ingame.Show();
-            ingame.FormClosed += (s, args) =>
+            // using 으로 감싸면 Dispose()도 깔끔하게
+            using (var ingame = new InGame(roomCode))
             {
-                UpdateRecordWithNewSocket();
-                this.Show();
-            };
+                // ShowDialog를 호출해야 모달이 뜨고 최소한 빈 창이라도 보임
+                ingame.ShowDialog();
+            }
+            // InGame이 닫힌 뒤에야 호출됩니다
+            UpdateRecordWithNewSocket();
+            this.Show();
         }
 
         private void UpdateRecordWithNewSocket()
@@ -238,7 +235,13 @@ namespace Omok_Client.Form
 
         private void Lobby_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //Application.Exit(); // 애플리케이션 종료
+            // 우측 상단 X 클릭 시 DialogResult가 아직 None이라면　프로그램 종료로 간주함
+            if (this.DialogResult == DialogResult.None)
+            {
+                Client.Disconnect();
+                Session.Clear();
+                this.DialogResult = DialogResult.Abort;
+            }
         }
     }
 }
