@@ -1,23 +1,13 @@
-﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omok_Client", "Omok_Client\Omok_Client.csproj", "{0E752A43-B937-4A33-861A-CC71F7BE6B63}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omok_Server", "Omok_Server\Omok_Server.csproj", "{7B20E988-3058-4185-A554-CA327C4B22BE}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B6D19A5A-F3BF-46AC-B259-F71EF817A230} = {B6D19A5A-F3BF-46AC-B259-F71EF817A230}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "솔루션 항목", "솔루션 항목", "{2A3A057F-5D22-31FD-628C-DF5EF75AEF1E}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omok_Chat", "Omok_Chat\Omok_Chat.csproj", "{A1C4DC26-2DBD-4BEE-BABF-0A65E34A8E22}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pack_Server", "Pack_Server\Pack_Server.csproj", "{B6D19A5A-F3BF-46AC-B259-F71EF817A230}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Omok_Network", "Omok_Network\Omok_Network.csproj", "{0F5A826C-E14B-4F02-8010-A3B47CB020E2}"
 EndProject
@@ -33,18 +23,6 @@ Global
 		{0E752A43-B937-4A33-861A-CC71F7BE6B63}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0E752A43-B937-4A33-861A-CC71F7BE6B63}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0E752A43-B937-4A33-861A-CC71F7BE6B63}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7B20E988-3058-4185-A554-CA327C4B22BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7B20E988-3058-4185-A554-CA327C4B22BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7B20E988-3058-4185-A554-CA327C4B22BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7B20E988-3058-4185-A554-CA327C4B22BE}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A1C4DC26-2DBD-4BEE-BABF-0A65E34A8E22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A1C4DC26-2DBD-4BEE-BABF-0A65E34A8E22}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A1C4DC26-2DBD-4BEE-BABF-0A65E34A8E22}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A1C4DC26-2DBD-4BEE-BABF-0A65E34A8E22}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B6D19A5A-F3BF-46AC-B259-F71EF817A230}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B6D19A5A-F3BF-46AC-B259-F71EF817A230}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B6D19A5A-F3BF-46AC-B259-F71EF817A230}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B6D19A5A-F3BF-46AC-B259-F71EF817A230}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F5A826C-E14B-4F02-8010-A3B47CB020E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F5A826C-E14B-4F02-8010-A3B47CB020E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F5A826C-E14B-4F02-8010-A3B47CB020E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
