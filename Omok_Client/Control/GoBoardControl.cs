@@ -16,12 +16,20 @@ namespace Omok_Client.Control
     {
         public enum STONE { none, black, white }
         private STONE[,] stones = new STONE[19, 19];
-        private STONE curStone = STONE.black;
+        // private STONE curStone = STONE.black;
         private int gridSize = 30;
         private bool gameStarted = false;
         private bool gameDone = false;
         private string myTeam = "A";
         private string currentTurnTeam = "A";
+
+        private bool deletingStoneEnabled = false;
+
+        public void SetDeletingStoneEnabled(bool enabled)
+        {
+            deletingStoneEnabled = enabled;
+        }
+
 
         const int flowerSize = 6;
 
@@ -64,8 +72,17 @@ namespace Omok_Client.Control
             if (x < 0 || x >= 19 || y < 0 || y >= 19) return;
             if (stones[x, y] != STONE.none) return;
 
-            stones[x, y] = curStone;
-            curStone = (curStone == STONE.black) ? STONE.white : STONE.black;
+            //stones[x, y] = curStone;
+            //curStone = (curStone == STONE.black) ? STONE.white : STONE.black;
+            //Invalidate();
+
+            stones[x,y] = (team == 1) ? STONE.black : STONE.white;
+            Invalidate();
+        }
+        public void DeleteStone(int x,int y)
+        {
+            if (x < 0 || x >= 19 || y < 0 || y >= 19) return;
+            stones[x,y] = STONE.none;
             Invalidate();
         }
 
@@ -123,7 +140,9 @@ namespace Omok_Client.Control
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
+
             base.OnMouseClick(e);
+
             if (!gameStarted || gameDone) return;
             if (currentTurnTeam != myTeam) return;
 
@@ -138,9 +157,22 @@ namespace Omok_Client.Control
             int x = (e.X - originX + gridSize / 2) / gridSize;
             int y = (e.Y - originY + gridSize / 2) / gridSize;
 
+            if (deletingStoneEnabled)
+            {
+                if (x >= 0 && x < 19 && y >= 0 && y < 19 && stones[x, y] != STONE.none)
+                {
+                    Client.Send($"STONE_DEL|{Session.Pk}|{Session.Nickname}|{x}|{y}");
+                }
+
+                deletingStoneEnabled = false;
+               
+            }
+
+
             if (x >= 0 && x < 19 && y >= 0 && y < 19 && stones[x, y] == STONE.none)
             {
                 Client.Send($"STONE_PUT|{Session.Pk}|{Session.Nickname}|{x}|{y}");
+                                  
             }
         }
 

@@ -28,6 +28,8 @@ namespace Omok_Server2.Controllers
                     return HandleStonePut(tokens, client);
                 case CommandType.SKILL_USE:
                     return HandleSkillUse(tokens, client);
+                case CommandType.STONE_DEL:
+                    return HandleStoneDel(tokens, client);
             }
             return "INVALID_COMMAND";
         }
@@ -135,6 +137,33 @@ namespace Omok_Server2.Controllers
 
             return "STONE_PUT_OK";
         }
+
+        private static string HandleStoneDel(string[] tokens, ClientHandler client)
+        {
+            if (tokens.Length < 5) return "STONE_DEL_FAIL|FORMAT";
+
+            string pk = tokens[1];   // 플레이어 PK
+            int x = int.Parse(tokens[3]); // 삭제할 X 좌표
+            int y = int.Parse(tokens[4]); // 삭제할 Y 좌표
+
+            
+            var room = RoomManager.GetRoomByUserPk(pk);
+            if (room == null) return "STONE_DEL_FAIL|NO_ROOM";
+
+            var current = room.GetCurrentTurnPlayerByTeam();
+            if (client != current) return "STONE_DEL_FAIL|NOT_YOUR_TURN";  // 차례가 아니면 실패
+
+            int team = room.GetTeam(client) ?? 0;
+            if (team == 0) return "STONE_PUT_FAIL|NO_TEAM";
+
+            // 돌 삭제
+            room.DeleteStone(x, y,team);
+
+            room.Broadcast($"STONE_DEL|{x}|{y}|{client.getNickname()}|{team}");
+            //room.AdvanceTurn();
+            return "STONE_DELETE_OK";
+        }
+
 
         private static string HandleSkillUse(string[] tokens, ClientHandler client)
         {

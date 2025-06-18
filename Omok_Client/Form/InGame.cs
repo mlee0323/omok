@@ -27,6 +27,14 @@ namespace Omok_Client.Form
         private string currentTurnTeam = "";  // 현재 턴 팀
         private int currentTurnIndex = 0;            // 팀 내 순번
 
+        private int timeAddUse = 2;
+        private int timeRemoveUse = 2;
+
+        private bool deletingStoneEnabled = false;  // 돌 삭제 기능 활성화 여부
+        private Point deletingStonePos = new Point(-1, -1);  // 삭제할 돌의 위치
+        private int deleteStoneUses = 2;  // 돌 삭제 사용 횟수
+
+
 
         private GoBoardControl board; // 바둑판 컨트롤
         private ChatForm chatForm; // 채팅 폼
@@ -54,6 +62,13 @@ namespace Omok_Client.Form
             // 서버에서 팀 정보 받아오기
             LoadTeamInfoFromServer();
             MySelfLabel.Text = Session.Nickname;
+
+            btn_skill_2.Text = $"시간 늘리기 ({timeAddUse})";
+            btn_skill_2.Enabled = true;
+
+            btn_skill_1.Text = $"지우기 ({timeRemoveUse})";
+            btn_skill_1.Enabled = true;
+
         }
         private void InGame_Load(object sender, EventArgs e)
         {
@@ -141,6 +156,9 @@ namespace Omok_Client.Form
                 remainingSeconds = 30;
                 lbl_timer.Text = $"{remainingSeconds}초";
                 turnTimer?.Start();
+
+                btn_skill_2.Enabled = (nickname == MySelfLabel.Text) && (timeAddUse > 0);
+                btn_skill_1.Enabled = (nickname == MySelfLabel.Text) && (timeRemoveUse > 0);
             }));
         }
 
@@ -153,6 +171,20 @@ namespace Omok_Client.Form
             int team = int.Parse(tokens[4]);
 
             board.PlaceStone(x, y, team);
+        }
+        private void HandleStoneDelete(string msg)
+        {
+            
+
+            string[] tokens = msg.Split('|');
+            int x = int.Parse(tokens[1]);
+            int y = int.Parse(tokens[2]);
+            int team = int.Parse(tokens[4]);
+
+            
+            
+            board.DeleteStone(x, y);
+            deletingStone.Text = "";
         }
 
         private async void HandleGameOver(string msg)
@@ -249,6 +281,8 @@ namespace Omok_Client.Form
                         HandleChat(msg);
                     else if (msg.StartsWith("SKILL_USE|"))
                         HandleSkillUse(msg);
+                    else if (msg.StartsWith("STONE_DEL|"))
+                        HandleStoneDelete(msg);
 
                     // 기타 메시지 처리...
                 }
@@ -327,7 +361,26 @@ namespace Omok_Client.Form
             string nickname = tokens[2];
             int skillType = int.Parse(tokens[3]);
 
-            if (skillType == 3) // 바둑판 어지르기 스킬
+            if (skillType == 1) // 돌 삭제 스킬
+            {
+                Invoke(new Action(() =>
+                {
+                    // 본인 차례일 때만 사용 가능
+                    if (nickname != Session.Nickname)
+                    {
+                        return;
+                    }
+
+                    
+                    deletingStoneEnabled = true;
+                    
+
+                    // 채팅창에 스킬 사용 메시지 표시
+                    AppendSystemMessage($"{nickname}님이 돌 삭제 스킬을 사용했습니다.");
+                }));
+            }
+
+                if (skillType == 3) // 바둑판 어지르기 스킬
             {
                 Invoke(new Action(() =>
                 {
@@ -346,6 +399,9 @@ namespace Omok_Client.Form
                     board.EndGame();
                 }));
             }
+
+
+
         }
 
         // 버튼 처리
@@ -386,5 +442,42 @@ namespace Omok_Client.Form
             }
         }
 
+        private void btn_skill_2_Click(object sender, EventArgs e)
+        {
+            if (timeAddUse <= 0)
+                return;
+
+            remainingSeconds += 15;
+            timeAddUse--;
+
+            btn_skill_2.Text = $"시간 늘리기 ({timeAddUse})";
+
+            if (timeAddUse == 0)
+                btn_skill_2.Enabled = false;
+            AppendSystemMessage($"{Session.Nickname}님이 시간을 15초 연장했습니다.");
+        }
+
+        private void btn_skill_1_Click(object sender, EventArgs e)
+        {
+            if (deleteStoneUses <= 0)
+                return;
+            deletingStoneEnabled = true;
+            board.SetDeletingStoneEnabled(true);
+
+            deletingStone.Text = "돌을 지우고 착수하세요";
+            deleteStoneUses--; // 사용 횟수 차감
+            btn_skill_1.Text = $"지우기 ({deleteStoneUses})";
+
+            // 사용 횟수 다 되면 버튼 비활성화
+            if (deleteStoneUses == 0)
+                btn_skill_1.Enabled = false;
+
+
+            Client.Send($"SKILL_USE|{Session.Pk}|{Session.Nickname}|{roomCode}|1");
+            
+        }
+
+       
     }
-}
+    }
+

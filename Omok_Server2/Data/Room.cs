@@ -266,6 +266,15 @@ namespace Omok_Server2.Data
 
             return CheckWin(x, y, team);
         }
+        public bool DeleteStone(int x,int y, int team)
+        {
+            if (x < 0 || x >= 19 || y < 0 || y >= 19) return false;
+            board[x, y] = 0;
+
+            stoneCount--;
+            return CheckWin(x, y, team);
+
+        }
 
         private bool CheckWin(int x, int y, int team)
         {
