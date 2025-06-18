@@ -28,6 +28,7 @@ namespace Omok_Client.Form
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.btn_exit = new MetroFramework.Controls.MetroButton();
             this.btn_skill_1 = new MetroFramework.Controls.MetroButton();
             this.btn_skill_2 = new MetroFramework.Controls.MetroButton();
@@ -56,6 +57,7 @@ namespace Omok_Client.Form
             this.btn_chat = new MetroFramework.Controls.MetroButton();
             this.MySelfLabel = new MetroFramework.Controls.MetroLabel();
             this.deletingStone = new MetroFramework.Controls.MetroLabel();
+            this.reset_timer = new System.Windows.Forms.Timer(this.components);
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -66,9 +68,9 @@ namespace Omok_Client.Form
             // 
             // btn_exit
             // 
-            this.btn_exit.Location = new System.Drawing.Point(7, 150);
+            this.btn_exit.Location = new System.Drawing.Point(6, 107);
             this.btn_exit.Name = "btn_exit";
-            this.btn_exit.Size = new System.Drawing.Size(94, 45);
+            this.btn_exit.Size = new System.Drawing.Size(77, 32);
             this.btn_exit.TabIndex = 0;
             this.btn_exit.Text = "나가기";
             this.btn_exit.Click += new System.EventHandler(this.btn_exit_Click);
@@ -338,7 +340,7 @@ namespace Omok_Client.Form
             this.btn_music.Location = new System.Drawing.Point(6, 17);
             this.btn_music.Margin = new System.Windows.Forms.Padding(2);
             this.btn_music.Name = "btn_music";
-            this.btn_music.Size = new System.Drawing.Size(79, 32);
+            this.btn_music.Size = new System.Drawing.Size(77, 32);
             this.btn_music.TabIndex = 2;
             this.btn_music.Text = "음악 끄기";
             // 
@@ -347,7 +349,7 @@ namespace Omok_Client.Form
             this.btn_chat.Location = new System.Drawing.Point(6, 62);
             this.btn_chat.Margin = new System.Windows.Forms.Padding(2);
             this.btn_chat.Name = "btn_chat";
-            this.btn_chat.Size = new System.Drawing.Size(79, 32);
+            this.btn_chat.Size = new System.Drawing.Size(77, 32);
             this.btn_chat.TabIndex = 1;
             this.btn_chat.Text = "채팅 끄기";
             // 
@@ -369,6 +371,11 @@ namespace Omok_Client.Form
             this.deletingStone.Name = "deletingStone";
             this.deletingStone.Size = new System.Drawing.Size(0, 0);
             this.deletingStone.TabIndex = 31;
+            // 
+            // reset_timer
+            // 
+            this.reset_timer.Interval = 1000;
+            this.reset_timer.Tick += new System.EventHandler(this.reset_timer_Tick);
             // 
             // InGame
             // 
@@ -434,5 +441,6 @@ namespace Omok_Client.Form
         private System.Windows.Forms.ListView lv_teamB;
         private MetroFramework.Controls.MetroLabel MySelfLabel;
         private MetroFramework.Controls.MetroLabel deletingStone;
+        private System.Windows.Forms.Timer reset_timer;
     }
 }

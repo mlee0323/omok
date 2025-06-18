@@ -36,13 +36,14 @@ namespace Omok_Client.Form
         private Point deletingStonePos = new Point(-1, -1);  // 삭제할 돌의 위치
         private int deleteStoneUses = 2;  // 돌 삭제 사용 횟수
 
-
-
         private GoBoardControl board; // 바둑판 컨트롤
         private ChatForm chatForm; // 채팅 폼
 
         private System.Windows.Forms.Timer turnTimer;
+
+        // 타이머
         private int remainingSeconds = 30;
+        private int resetSeconds = 5;
 
         public InGame(string _roomCode)
         {
@@ -68,11 +69,13 @@ namespace Omok_Client.Form
             LoadTeamInfoFromServer();
             MySelfLabel.Text = Session.Nickname;
 
-            btn_skill_2.Text = $"시간 늘리기 ({timeAddUse})";
-            btn_skill_2.Enabled = true;
-
             btn_skill_1.Text = $"지우기 ({timeRemoveUse})";
-            btn_skill_1.Enabled = true;
+            btn_skill_1.Enabled = false;
+
+            btn_skill_2.Text = $"시간 늘리기 ({timeAddUse})";
+            btn_skill_2.Enabled = false;
+
+            btn_skill_3.Enabled = false;
 
         }
         private void InGame_Load(object sender, EventArgs e)
@@ -146,7 +149,10 @@ namespace Omok_Client.Form
                     {
                         RemovePlayerFromTeams(nickname);
 
-                        var item = new ListViewItem(nickname) { Name = nickname };
+                        string str = nickname;
+                        if (readyFlag)
+                            str += " (Ready)";
+                        var item = new ListViewItem(str) { Name = nickname };
                         if (team == 1)
                             lv_teamA.Items.Add(item);
                         else
@@ -156,7 +162,7 @@ namespace Omok_Client.Form
                 case "PLAYER_EXIT":
                     if (tokens.Length >= 2)
                     {
-                        var ExitPlayerName = tokens[1];
+                        var ExitPlayerName = tokens[2];
                         Invoke(new Action(() => RemovePlayerFromTeams(ExitPlayerName)));
                     }
                     break;
@@ -211,8 +217,9 @@ namespace Omok_Client.Form
                 lbl_timer.Text = $"{remainingSeconds}초";
                 turnTimer?.Start();
 
-                btn_skill_2.Enabled = (nickname == MySelfLabel.Text) && (timeAddUse > 0);
                 btn_skill_1.Enabled = (nickname == MySelfLabel.Text) && (timeRemoveUse > 0);
+                btn_skill_2.Enabled = (nickname == MySelfLabel.Text) && (timeAddUse > 0);
+                btn_skill_3.Enabled = (nickname == MySelfLabel.Text);
             }));
         }
 
@@ -241,53 +248,41 @@ namespace Omok_Client.Form
             deletingStone.Text = "";
         }
 
-        private async void HandleGameOver(string msg)
+        private void HandleGameOver(string msg)
         {
             string[] tokens = msg.Split('|');
-            string winner = tokens[1];
-            
-            gameStarted = false;
+            int winner = int.Parse(tokens[1]);
+
+            switch (winner)
+            {
+                case -1:
+                    AppendSystemMessage($"무승부입니다! {resetSeconds}초 뒤에 게임이 종료됩니다.");
+                    break;
+                case 1:
+                case 2:
+                    AppendSystemMessage($"{(winner == 1 ? 'A' : 'B')} 팀이 승리했습니다! {resetSeconds}초 뒤에 게임이 종료됩니다.");
+                    break;
+                default:
+                    break;
+            }
 
             Invoke(new Action(() =>
             {
-                if (winner == "0")
-                {
-                    AppendSystemMessage("게임이 종료되었습니다.");
-                }
-                else
-                {
-                    if (winner == "1")
-                        winner = "A";
-                    else if (winner == "2")
-                        winner = "B";
-                    else
-                        winner = "Unknown";
-                    AppendSystemMessage($"{winner} 팀이 승리했습니다!");
-                }
-                turnTimer?.Stop();
-            }));
+                gameStarted = false;
+                turnTimer.Stop();
 
-            board.EndGame();
+                pn_board.Enabled = false;
+                board.EndGame();
 
-            // 5초 대기 후 초기화
-            await Task.Delay(5000);
-
-            Invoke(new Action(() =>
-            {
-                lv_teamA.Items.Clear();
-                lv_teamB.Items.Clear();
-                lbl_timer.Text = "";
-                lbl_player.Text = "";
-                btn_move.Enabled = true;
-                btn_exit.Enabled = true;
-                btn_shuffle.Enabled = true;
-                btn_ready.Enabled = true;
+                resetSeconds = 5;       // 카운트 초기화 (필요 시)
+                reset_timer.Start();    // UI 스레드에 안전하게 Start
             }));
         }
 
         private void LoadBadukpan()
         {
             // 바둑판 컨트롤 로드
+            pn_board.Controls.Clear();
             board = new GoBoardControl();
             board.Dock = DockStyle.Fill;
             // board.OnTurnChanged += (msg) => showTurnLabel.Text = "현재 턴: " + msg;
@@ -366,6 +361,8 @@ namespace Omok_Client.Form
                 btn_shuffle.Enabled = false;
                 btn_ready.Enabled = false;
 
+                pn_board.Enabled = true;
+
                 // 바둑판 다시 그리기 등 초기화가 필요하면 여기서
                 AppendSystemMessage($"{blackTeam} 팀이 먼저 시작합니다!");
             }));
@@ -436,7 +433,7 @@ namespace Omok_Client.Form
                 }));
             }
 
-                if (skillType == 3) // 바둑판 어지르기 스킬
+            if (skillType == 3) // 바둑판 어지르기 스킬
             {
                 Invoke(new Action(() =>
                 {
@@ -455,9 +452,6 @@ namespace Omok_Client.Form
                     board.EndGame();
                 }));
             }
-
-
-
         }
 
         // 버튼 처리
@@ -545,6 +539,54 @@ namespace Omok_Client.Form
             }
             catch { /* 네트워크 오류 무시 */ }
         }
+
+        private void reset_timer_Tick(object sender, EventArgs e)
+        {
+            AppendSystemMessage($"{resetSeconds}");
+            if (resetSeconds-- <= 0)
+            {
+                pn_board.Enabled = false;
+                LoadBadukpan();
+                pn_board.Enabled = true;
+                btn_move.Enabled = true;
+                btn_shuffle.Enabled = true;
+                btn_exit.Enabled = true;
+                btn_ready.Text = "게임 준비";
+                btn_ready.Enabled = true;
+                isReady = false;
+                lbl_player.Text = "";
+                lbl_turn.Text = "";
+
+                btn_skill_1.Enabled = false;
+                btn_skill_2.Enabled = false;
+                btn_skill_3.Enabled = false;
+
+                // 팀 정보 업데이트
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        LoadTeamInfoFromServer();
+                    }
+                    catch (Exception ex)
+                    {
+                        Invoke(new Action(() => MessageBox.Show("팀 정보 갱신 실패: " + ex.Message)));
+                    }
+                });
+
+                foreach (ListViewItem item in lv_teamA.Items)
+                    UpdatePlayerReadyState(item.Name, false);
+                foreach (ListViewItem item in lv_teamB.Items)
+                    UpdatePlayerReadyState(item.Name, false);
+
+                // 타이머 중단 및 카운트 초기화
+                resetSeconds = 5;
+                reset_timer.Stop();
+
+                return;
+            }
+            
+        }
     }
-    }
+}
 
