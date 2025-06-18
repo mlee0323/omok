@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
+using System.IO.Ports;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -48,6 +50,9 @@ namespace Omok_Client.Form
             roomCode = _roomCode;
             this.Text += roomCode;
 
+            lbl_turn.Text = "";
+            lbl_player.Text = "";
+
             // 초기에는 비활성화
             btn_move.Enabled = false;
             btn_ready.Enabled = false;
@@ -85,58 +90,107 @@ namespace Omok_Client.Form
                 return;
             }
 
-            Client.Send($"TEAM_INFO|{Session.Pk}|{Session.Nickname}|{roomCode}");
-
-            while (true)
+            try
             {
-                string msg = Client.Receive();
-                if (msg == "TEAM_INFO_END") break;
+                // 요청 보내고 TEAM_INFO_END까지 수신
+                var messages = Client.RequestResponse<string>(
+                    $"TEAM_INFO|{Session.Pk}|{Session.Nickname}|{roomCode}",
+                    "TEAM_INFO_END",
+                    msg => msg);
 
-                if (msg.StartsWith("TEAM_INFO_FAIL"))
+                foreach (var msg in messages)
                 {
-                    MessageBox.Show("로드 실패: " + msg);
-                    this.Close();
-                    return;
+                    if (msg.StartsWith("TEAM_INFO_FAIL"))
+                    {
+                        MessageBox.Show("팀 정보 로드 실패: " + msg);
+                        this.Close();
+                        return;
+                    }
+                    HandleTeamChanged(msg);
                 }
-                HandleTeamChanged(msg);
-            }
 
-            btn_move.Enabled = true;
-            btn_ready.Enabled = true;
-            pn_board.Enabled = true;
-            isInitialized = true;
+                btn_move.Enabled = true;
+                btn_ready.Enabled = true;
+                pn_board.Enabled = true;
+                isInitialized = true;
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show("네트워크 오류: " + ex.Message);
+                this.Close();
+            }
         }
 
         private void HandleTeamChanged(string msg)
         {
-            string[] tokens = msg.Split('|');
-            string pk = tokens[1];
-            string nickname = tokens[2];
-            int team = int.Parse(tokens[3]);
-            bool isReady = tokens.Length >= 5 && bool.Parse(tokens[4]);
+            var tokens = msg.Split('|');
+            if(tokens.Length == 0) return;
 
-            if (pk == Session.Pk.ToString())
+            var command = tokens[0];
+            switch(command)
             {
-                Session.Team = team;
-                board.MyTeam = team == 1 ? "A" : "B";
+                case "TEAM_CHANGED":
+                case "TEAM_INFO":
+                    var pk = tokens[1];
+                    var nickname = tokens[2];
+                    if (!int.TryParse(tokens[3], out int team)) return;
+                    bool readyFlag = tokens.Length >= 5 && bool.TryParse(tokens[4], out bool r) && r;
+
+                    if (pk == Session.Pk.ToString())
+                    {
+                        Session.Team = team;
+                        board.MyTeam = team == 1 ? "A" : "B";
+                    }
+
+                    Invoke(new Action(() =>
+                    {
+                        RemovePlayerFromTeams(nickname);
+
+                        var item = new ListViewItem(nickname) { Name = nickname };
+                        if (team == 1)
+                            lv_teamA.Items.Add(item);
+                        else
+                            lv_teamB.Items.Add(item);
+                    }));
+                    break;
+                case "PLAYER_EXIT":
+                    if (tokens.Length >= 2)
+                    {
+                        var ExitPlayerName = tokens[1];
+                        Invoke(new Action(() => RemovePlayerFromTeams(ExitPlayerName)));
+                    }
+                    break;
+                default:
+                    // 알 수 없는 명령어
+                    break;
             }
+        }
 
-            Invoke(new Action(() =>
-            {
-                lv_teamA.Items.RemoveByKey(nickname);
-                lv_teamB.Items.RemoveByKey(nickname);
+        private void HandlePlayerReady(string msg)
+        {
+            var tokens = msg.Split('|');
+            if (tokens.Length < 4) return;
 
-                if (tokens[0] != "PLAYER_EXIT")
-                {
-                    var text = isReady ? $"{nickname} (Ready)" : nickname;
-                    var item = new ListViewItem(text) { Name = nickname };
+            var playerPk = tokens[1];
+            var ReadyPlayerName = tokens[2];
+            if (!int.TryParse(tokens[3], out int teamNum)) return;
+            var isReady = tokens.Length >= 5 && bool.TryParse(tokens[4], out bool ready) && ready;
 
-                    if (team == 1)
-                        lv_teamA.Items.Add(item);
-                    else
-                        lv_teamB.Items.Add(item);
-                }
-            }));
+            // Reflect change in UI
+            Invoke(new Action(() => UpdatePlayerReadyState(ReadyPlayerName, isReady)));
+        }
+
+        private void RemovePlayerFromTeams(string playerName)
+        {
+            lv_teamA.Items.RemoveByKey(playerName);
+            lv_teamB.Items.RemoveByKey(playerName);
+        }
+
+        private void UpdatePlayerReadyState(string playerName, bool isReady)
+        {
+            ListViewItem item = lv_teamA.Items.Find(playerName, false).FirstOrDefault() ?? lv_teamB.Items.Find(playerName, false).FirstOrDefault();
+            if (item != null)
+                item.Text = isReady ? $"{playerName} (Ready)" : playerName;
         }
 
         private void HandleTurnInfo(string msg)
@@ -267,8 +321,10 @@ namespace Omok_Client.Form
                     msg = Client.Receive();
                     if (msg == null) continue;
 
-                    if (msg.StartsWith("TEAM_CHANGED") || msg.StartsWith("PLAYER_EXIT") || msg.StartsWith("PLAYER_READY"))
+                    if (msg.StartsWith("TEAM_CHANGED") || msg.StartsWith("PLAYER_EXIT"))
                         HandleTeamChanged(msg);
+                    else if (msg.StartsWith("PLAYER_READY"))
+                        HandlePlayerReady(msg);
                     else if (msg.StartsWith("GAME_START"))
                         HandleGameStart(msg);
                     else if (msg.StartsWith("TURN_INFO|"))
@@ -421,8 +477,6 @@ namespace Omok_Client.Form
 
         private void btn_exit_Click(object sender, EventArgs e)
         {
-            Client.Send($"EXIT_ROOM|{Session.Pk}|{Session.Nickname}|{roomCode}");
-            Session.RoomCode = string.Empty;
             this.Close();
         }
 
@@ -478,6 +532,19 @@ namespace Omok_Client.Form
         }
 
        
+        private void InGame_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            // ListenLoop 중단
+            isRunning = false;
+
+            // 서버에 방 나감 알림
+            try
+            {
+                Client.Send($"EXIT_ROOM|{Session.Pk}|{Session.Nickname}|{roomCode}");
+                Session.RoomCode = string.Empty;
+            }
+            catch { /* 네트워크 오류 무시 */ }
+        }
     }
     }
 

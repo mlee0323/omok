@@ -61,6 +61,8 @@ namespace Omok_Server2
             {
                 case "Auth":
                     response = AuthController.Handle(cmd, tokens);
+                    //if (response.StartsWith("LOGIN_SUCCESS"))
+
                     break;
 
                 case "Room":
@@ -74,6 +76,11 @@ namespace Omok_Server2
                     userpk = tokens[1];
                     nickname = tokens[2];
                     response = GameController.Handle(cmd, tokens, this);
+                    break;
+
+                case "History":
+                    userpk = tokens[1];
+                    response = HistoryController.Handle(cmd, tokens, this);
                     break;
 
                 default:
@@ -107,8 +114,9 @@ namespace Omok_Server2
                     HandlePacket(msg);
                 }
             }
-            catch
+            catch (Exception e)
             {
+                // Log(e.ToString());
                 Log("클라이언트 통신 오류");
             }
             finally

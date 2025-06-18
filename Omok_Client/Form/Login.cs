@@ -11,10 +11,6 @@ namespace Omok_Client.Form
 {
     public partial class Login : MetroForm
     {
-        private TcpClient m_client;
-        private NetworkStream m_stream;
-        private Thread m_recvThread;
-
         public static List<string> loggedInUsers = new List<string>();
 
         public InGame GameMainScreen;
@@ -59,22 +55,8 @@ namespace Omok_Client.Form
                 Session.Pk = pk;
                 Session.Nickname = nickname;
 
-                Lobby lobby = new Lobby();
-                lobby.FormClosed += (s, e) =>
-                {
-                    if (lobby.UserLoggedOut)
-                    {
-                        this.Show(); // 로그아웃이면 다시 로그인 폼 보여줌
-                    }
-                    else
-                    {
-                        this.Close(); // 나가기 버튼 눌러 종료한 경우 프로그램 종료
-                    }
-                };
-
-                this.Hide();
-                lobby.Show();
-
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
             else
             {
@@ -90,7 +72,16 @@ namespace Omok_Client.Form
 
         private void exit_btn_Click(object sender, EventArgs e)
         {
+            this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void Login_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.DialogResult != DialogResult.OK)
+            {
+                this.DialogResult = DialogResult.Cancel;
+            }
         }
     }
 }

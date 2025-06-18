@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -28,6 +28,9 @@ namespace Omok_Server2.Helper
                 "STONE_PUT" => CommandType.STONE_PUT,
                 "SKILL_USE" => CommandType.SKILL_USE,
                 "STONE_DEL" => CommandType.STONE_DEL,
+                "HISTORY_LOAD" => CommandType.HISTORY_LOAD,
+                "HISTORY_STONES_LOAD" => CommandType.HISTORY_STONES_LOAD,
+
                 _ => CommandType.Unknown
             };
         }
@@ -48,7 +51,10 @@ namespace Omok_Server2.Helper
                 CommandType.SKILL_USE or
                 CommandType.STONE_DEL
                 => "Game",
-                
+
+                CommandType.HISTORY_LOAD or
+                CommandType.HISTORY_STONES_LOAD => "History",
+
                 _ => "Unknown"
             };
         }

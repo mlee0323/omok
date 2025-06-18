@@ -50,54 +50,60 @@
             // 
             // btn_logout
             // 
-            this.btn_logout.Location = new System.Drawing.Point(216, 269);
+            this.btn_logout.Location = new System.Drawing.Point(252, 248);
+            this.btn_logout.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_logout.Name = "btn_logout";
-            this.btn_logout.Size = new System.Drawing.Size(155, 41);
+            this.btn_logout.Size = new System.Drawing.Size(181, 38);
             this.btn_logout.TabIndex = 0;
             this.btn_logout.Text = "로그아웃";
             this.btn_logout.Click += new System.EventHandler(this.btn_logout_Click);
             // 
             // btn_exit
             // 
-            this.btn_exit.Location = new System.Drawing.Point(216, 316);
+            this.btn_exit.Location = new System.Drawing.Point(252, 292);
+            this.btn_exit.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_exit.Name = "btn_exit";
-            this.btn_exit.Size = new System.Drawing.Size(155, 41);
+            this.btn_exit.Size = new System.Drawing.Size(181, 38);
             this.btn_exit.TabIndex = 1;
             this.btn_exit.Text = "게임 종료";
             this.btn_exit.Click += new System.EventHandler(this.btn_exit_Click);
             // 
             // btn_re
             // 
-            this.btn_re.Location = new System.Drawing.Point(6, 66);
+            this.btn_re.Location = new System.Drawing.Point(7, 61);
+            this.btn_re.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_re.Name = "btn_re";
-            this.btn_re.Size = new System.Drawing.Size(155, 41);
+            this.btn_re.Size = new System.Drawing.Size(181, 38);
             this.btn_re.TabIndex = 2;
             this.btn_re.Text = "랜덤 참가";
             this.btn_re.Click += new System.EventHandler(this.btn_re_Click);
             // 
             // btn_ec
             // 
-            this.btn_ec.Location = new System.Drawing.Point(6, 113);
+            this.btn_ec.Location = new System.Drawing.Point(7, 104);
+            this.btn_ec.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_ec.Name = "btn_ec";
-            this.btn_ec.Size = new System.Drawing.Size(155, 41);
+            this.btn_ec.Size = new System.Drawing.Size(181, 38);
             this.btn_ec.TabIndex = 3;
             this.btn_ec.Text = "코드로 참여";
             this.btn_ec.Click += new System.EventHandler(this.btn_ec_Click);
             // 
             // btn_history
             // 
-            this.btn_history.Location = new System.Drawing.Point(6, 88);
+            this.btn_history.Location = new System.Drawing.Point(7, 81);
+            this.btn_history.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_history.Name = "btn_history";
-            this.btn_history.Size = new System.Drawing.Size(155, 41);
+            this.btn_history.Size = new System.Drawing.Size(181, 38);
             this.btn_history.TabIndex = 5;
             this.btn_history.Text = "게임 기록";
             this.btn_history.Click += new System.EventHandler(this.btn_history_Click);
             // 
             // btn_cr
             // 
-            this.btn_cr.Location = new System.Drawing.Point(6, 19);
+            this.btn_cr.Location = new System.Drawing.Point(7, 18);
+            this.btn_cr.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.btn_cr.Name = "btn_cr";
-            this.btn_cr.Size = new System.Drawing.Size(155, 41);
+            this.btn_cr.Size = new System.Drawing.Size(181, 38);
             this.btn_cr.TabIndex = 6;
             this.btn_cr.Text = "방 만들기";
             this.btn_cr.Click += new System.EventHandler(this.btn_cr_Click);
@@ -105,7 +111,8 @@
             // metroLabel1
             // 
             this.metroLabel1.AutoSize = true;
-            this.metroLabel1.Location = new System.Drawing.Point(24, 64);
+            this.metroLabel1.Location = new System.Drawing.Point(28, 59);
+            this.metroLabel1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.metroLabel1.Name = "metroLabel1";
             this.metroLabel1.Size = new System.Drawing.Size(79, 19);
             this.metroLabel1.TabIndex = 7;
@@ -116,9 +123,11 @@
             this.groupBox1.Controls.Add(this.btn_cr);
             this.groupBox1.Controls.Add(this.btn_re);
             this.groupBox1.Controls.Add(this.btn_ec);
-            this.groupBox1.Location = new System.Drawing.Point(23, 101);
+            this.groupBox1.Location = new System.Drawing.Point(27, 93);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(170, 162);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.groupBox1.Size = new System.Drawing.Size(198, 150);
             this.groupBox1.TabIndex = 8;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "플레이";
@@ -132,9 +141,11 @@
             this.groupBox2.Controls.Add(this.metroLabel2);
             this.groupBox2.Controls.Add(this.lbl_win);
             this.groupBox2.Controls.Add(this.btn_history);
-            this.groupBox2.Location = new System.Drawing.Point(210, 101);
+            this.groupBox2.Location = new System.Drawing.Point(245, 93);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(170, 136);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.groupBox2.Size = new System.Drawing.Size(198, 126);
             this.groupBox2.TabIndex = 9;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "기록";
@@ -142,7 +153,8 @@
             // metroLabel5
             // 
             this.metroLabel5.AutoSize = true;
-            this.metroLabel5.Location = new System.Drawing.Point(6, 66);
+            this.metroLabel5.Location = new System.Drawing.Point(134, 37);
+            this.metroLabel5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.metroLabel5.Name = "metroLabel5";
             this.metroLabel5.Size = new System.Drawing.Size(26, 19);
             this.metroLabel5.TabIndex = 11;
@@ -151,7 +163,8 @@
             // lbl_lose
             // 
             this.lbl_lose.AutoSize = true;
-            this.lbl_lose.Location = new System.Drawing.Point(38, 66);
+            this.lbl_lose.Location = new System.Drawing.Point(168, 37);
+            this.lbl_lose.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_lose.Name = "lbl_lose";
             this.lbl_lose.Size = new System.Drawing.Size(16, 19);
             this.lbl_lose.TabIndex = 10;
@@ -160,7 +173,8 @@
             // metroLabel3
             // 
             this.metroLabel3.AutoSize = true;
-            this.metroLabel3.Location = new System.Drawing.Point(6, 41);
+            this.metroLabel3.Location = new System.Drawing.Point(76, 37);
+            this.metroLabel3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.metroLabel3.Name = "metroLabel3";
             this.metroLabel3.Size = new System.Drawing.Size(26, 19);
             this.metroLabel3.TabIndex = 9;
@@ -169,7 +183,8 @@
             // lbl_draw
             // 
             this.lbl_draw.AutoSize = true;
-            this.lbl_draw.Location = new System.Drawing.Point(38, 41);
+            this.lbl_draw.Location = new System.Drawing.Point(110, 37);
+            this.lbl_draw.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_draw.Name = "lbl_draw";
             this.lbl_draw.Size = new System.Drawing.Size(16, 19);
             this.lbl_draw.TabIndex = 8;
@@ -178,7 +193,8 @@
             // metroLabel2
             // 
             this.metroLabel2.AutoSize = true;
-            this.metroLabel2.Location = new System.Drawing.Point(6, 19);
+            this.metroLabel2.Location = new System.Drawing.Point(15, 37);
+            this.metroLabel2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.metroLabel2.Name = "metroLabel2";
             this.metroLabel2.Size = new System.Drawing.Size(26, 19);
             this.metroLabel2.TabIndex = 7;
@@ -187,7 +203,8 @@
             // lbl_win
             // 
             this.lbl_win.AutoSize = true;
-            this.lbl_win.Location = new System.Drawing.Point(38, 19);
+            this.lbl_win.Location = new System.Drawing.Point(52, 37);
+            this.lbl_win.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_win.Name = "lbl_win";
             this.lbl_win.Size = new System.Drawing.Size(16, 19);
             this.lbl_win.TabIndex = 6;
@@ -196,7 +213,8 @@
             // lbl_username
             // 
             this.lbl_username.AutoSize = true;
-            this.lbl_username.Location = new System.Drawing.Point(105, 64);
+            this.lbl_username.Location = new System.Drawing.Point(122, 59);
+            this.lbl_username.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_username.Name = "lbl_username";
             this.lbl_username.Size = new System.Drawing.Size(71, 19);
             this.lbl_username.TabIndex = 10;
@@ -204,16 +222,18 @@
             // 
             // Lobby
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(397, 368);
+            this.ClientSize = new System.Drawing.Size(463, 340);
             this.Controls.Add(this.lbl_username);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.metroLabel1);
             this.Controls.Add(this.btn_exit);
             this.Controls.Add(this.btn_logout);
+            this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
             this.Name = "Lobby";
+            this.Padding = new System.Windows.Forms.Padding(23, 55, 23, 18);
             this.Text = "로비";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Lobby_FormClosing);
             this.groupBox1.ResumeLayout(false);

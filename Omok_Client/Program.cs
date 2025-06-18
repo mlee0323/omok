@@ -18,11 +18,27 @@ namespace Omok_Client
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            while (true)
+            {
+                // 로그인
+                using (var login = new Login())
+                {
+                    if (login.ShowDialog() != DialogResult.OK)
+                        return;   // 프로그램 종료
+                }
 
-            var login = new Login();
-            Application.Run(login); // 메인폼은 Login
+                // 로비
+                using (var lobby = new Lobby())
+                {
+                    var result = lobby.ShowDialog();
+                    if (result == DialogResult.Retry)
+                        continue; // 로그인으로 다시 돌아옴
+                    else
+                        return;   // 프로그램 종료
+                }
+            }
         }
+
+
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Omok_Server2.Network;
+using Omok_Server2.Models;
 
 namespace Omok_Server2.Data
 {
@@ -17,8 +18,11 @@ namespace Omok_Server2.Data
 
         private List<ClientHandler> _clients = new();
         private Dictionary<ClientHandler, int> _teams = new(); // 1: A팀, 2: B팀
+
         private Dictionary<ClientHandler, bool> readyStatus = new();
         private HashSet<ClientHandler> loadingClients = new();
+
+        private Dictionary<ClientHandler, Player> _players = new(); // 플레이어의 정보를 담음
 
         public bool IsFull => _clients.Count >= MaxPlayers;
         public bool IsEmpty => _clients.Count == 0;
@@ -27,6 +31,10 @@ namespace Omok_Server2.Data
         private string whiteTeam = "B";
 
         private int stoneCount = 0;
+
+        private int room_pk = 0;
+        public DateTime StartTime { get; private set; }     // 게임 시작 시간
+        public DateTime EndTime { get; private set; }       // 게임 종료 시간
 
         // ───────────────────────────────
         // 게임 관련 상태
@@ -46,6 +54,8 @@ namespace Omok_Server2.Data
         private System.Timers.Timer? turnTimer;
         private const int TurnTimeLimitMs = 30000;
 
+        private Random random = new Random();
+
         // ───────────────────────────────
         // 생성자
         // ───────────────────────────────
@@ -60,10 +70,19 @@ namespace Omok_Server2.Data
         // ───────────────────────────────
         public bool AddClient(ClientHandler client)
         {
-            if (IsFull) return false;
+            if (IsFull || gameStarted) return false;
+
             _clients.Add(client);
             _teams[client] = (_clients.Count % 2 == 0) ? 2 : 1;
             readyStatus[client] = false;
+
+            // _players
+            _players[client] = new Player(
+                                    int.Parse(client.getUserPk()),
+                                    client.getNickname(),
+                                    (_clients.Count % 2 == 0) ? 2 : 1
+                               );
+
             return true;
         }
 
@@ -72,6 +91,10 @@ namespace Omok_Server2.Data
             if (!_clients.Contains(client)) return false;
             _clients.Remove(client);
             _teams.Remove(client);
+
+            //_players
+            _players.Remove(client);
+
             return true;
         }
 
@@ -81,11 +104,17 @@ namespace Omok_Server2.Data
             int cur = _teams[client];
             _teams[client] = cur == 1 ? 2 : 1;
             BroadcastNotMe("TEAM_CHANGE", client);
+
+            // _players
+            if (!_players.ContainsKey(client) || IsAnyLoading()) return false;
+            _players[client].SetTeam(cur == 1 ? 2 : 1);
+
             return true;
         }
 
         public int? GetTeam(ClientHandler client) =>
             _teams.TryGetValue(client, out int team) ? team : null;
+        // _player[client].GetTeam();
 
         // ───────────────────────────────
         // Ready / Loading 상태 관리
@@ -95,6 +124,11 @@ namespace Omok_Server2.Data
             if (!_clients.Contains(client)) return false;
             readyStatus[client] = ready;
             CheckGameStartCondition();
+
+            // _players
+            if (!_clients.Contains(client)) return false;
+            _players[client].SetReady();
+
             return true;
         }
 
@@ -103,6 +137,7 @@ namespace Omok_Server2.Data
             return readyStatus.TryGetValue(client, out bool isReady) && isReady;
         }
 
+        // TODO: _players에도 ready 처리 필요할 가능성 있음
         private bool IsEveryoneReady() =>
             _clients.All(c => readyStatus.TryGetValue(c, out var rdy) && rdy);
 
@@ -131,11 +166,13 @@ namespace Omok_Server2.Data
         public void StartGame()
         {
             gameStarted = true;
+            StartTime = DateTime.Now;       // 시작 시간은 현재 시간으로 설정
 
             teamAOrder = GetTeamMembers(1).OrderBy(_ => Guid.NewGuid()).ToList();
             teamBOrder = GetTeamMembers(2).OrderBy(_ => Guid.NewGuid()).ToList();
 
-            currentTurnTeam = new Random().Next(2) == 0 ? "A" : "B";
+            int rnd = random.Next(1, 3);
+            currentTurnTeam = rnd == 1 ? "A" : "B";
 
 
             blackTeam = currentTurnTeam;  // 선공팀은 흑돌로 고정
@@ -161,6 +198,19 @@ namespace Omok_Server2.Data
             }
 
             StartTurnTimer();
+
+            // DB 등록
+            room_pk = GameModel.SaveRoom(0, RoomCode, StartTime, EndTime);
+            foreach (var c in _clients)
+            {
+                if (_players[c].GetTeam() == rnd)
+                    _players[c].SetStoneColor('B');
+                else
+                    _players[c].SetStoneColor('W');
+
+                _players[c].SetTeamPk(GameModel.SaveTeam(room_pk, _players[c].GetPK(), _players[c].GetTeam(), _players[c].GetStoneColor()));
+            }
+                
 
             //Broadcast($"GAME_START|{blackTeam}"); // 흑돌 팀을 알림
             //AdvanceTurn(); // 바로 턴 시작
@@ -255,16 +305,21 @@ namespace Omok_Server2.Data
         // ───────────────────────────────
         // 오목 게임 진행 (돌 놓기 + 승리 판정)
         // ───────────────────────────────
-        public bool PlaceStone(int x, int y, int team)
+        public bool PlaceStone(int x, int y, ClientHandler client)
         {
             if (x < 0 || x >= 19 || y < 0 || y >= 19) return false;
             if (board[x, y] != 0) return false;
 
-            board[x, y] = team;
+            board[x, y] = (int)GetTeam(client);
 
             stoneCount++;
 
-            return CheckWin(x, y, team);
+            if (_players[client] != null)
+                GameModel.RecordStone(room_pk, _players[client].GetPK(), _players[client].GetName(), _players[client].GetTeam(), x, y, _players[client].GetStoneColor());
+
+            // return CheckWin(x, y, team);
+            return CheckWin(x, y, board[x, y]);
+
         }
         public bool DeleteStone(int x,int y, int team)
         {
@@ -301,13 +356,38 @@ namespace Omok_Server2.Data
                     if (nx < 0 || ny < 0 || nx >= 19 || ny >= 19) break;
                     if (board[nx, ny] == team) count++; else break;
                 }
-                if (count >= 5) return true;
+                if (count >= 5)
+                {
+                    // DB 등록
+                    GameModel.UpdateRoom(room_pk, RoomCode, StartTime, DateTime.Now);
+                    foreach (var c in _clients)
+                        if (c != null)
+                            GameModel.UpdateTeam(_players[c].GetTeamPK(),
+                                                room_pk,
+                                                _players[c].GetPK(),
+                                                _players[c].GetTeam(),
+                                                _players[c].GetStoneColor(),
+                                                _players[c].GetTeam() == team ? 'W' : 'L'
+                            );
+
+                    return true;
+                }
             }
             return false;
         }
 
         private List<ClientHandler> GetTeamMembers(int teamNumber) =>
             _clients.Where(c => _teams[c] == teamNumber).ToList();
+
+        //private List<ClientHandler> GetTeamMembers(int teamNumber)
+        //{
+        //    List<Player> result = new List<Player>();
+        //    foreach (var c in _clients)
+        //    {
+        //        if (_players[c].GetTeam() == teamNumber)
+        //            result.Add(_players[c]);
+        //    }
+        //}
 
         // ───────────────────────────────
         // 메시지 브로드캐스트

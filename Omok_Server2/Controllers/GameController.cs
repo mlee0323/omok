@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Omok_Server2.Data;
 using Omok_Server2.Constant;
 using Omok_Server2.Helper;
+using Omok_Server2.Models;
 
 namespace Omok_Server2.Controllers
 {
@@ -121,7 +122,7 @@ namespace Omok_Server2.Controllers
             int team = room.GetTeam(client) ?? 0;
             if (team == 0) return "STONE_PUT_FAIL|NO_TEAM";
 
-            bool win = room.PlaceStone(x, y, team);
+            bool win = room.PlaceStone(x, y, client);
 
             room.Broadcast($"STONE_PUT|{x}|{y}|{client.getNickname()}|{team}");
 

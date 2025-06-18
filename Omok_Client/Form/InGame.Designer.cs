@@ -159,6 +159,7 @@ namespace Omok_Client.Form
             this.lv_teamA.Size = new System.Drawing.Size(226, 45);
             this.lv_teamA.TabIndex = 18;
             this.lv_teamA.UseCompatibleStateImageBehavior = false;
+            this.lv_teamA.View = System.Windows.Forms.View.SmallIcon;
             // 
             // groupBox3
             // 
@@ -208,6 +209,7 @@ namespace Omok_Client.Form
             this.lv_teamB.Size = new System.Drawing.Size(223, 45);
             this.lv_teamB.TabIndex = 19;
             this.lv_teamB.UseCompatibleStateImageBehavior = false;
+            this.lv_teamB.View = System.Windows.Forms.View.SmallIcon;
             // 
             // metroLabel1
             // 
@@ -386,6 +388,7 @@ namespace Omok_Client.Form
             this.Name = "InGame";
             this.Padding = new System.Windows.Forms.Padding(12, 60, 12, 10);
             this.Text = "Game Code: ";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.InGame_FormClosing);
             this.Load += new System.EventHandler(this.InGame_Load);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();

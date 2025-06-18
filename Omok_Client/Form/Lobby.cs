@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
+using System.Net.Sockets;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using MetroFramework.Forms;
@@ -15,9 +18,11 @@ namespace Omok_Client.Form
         public Lobby()
         {
             InitializeComponent();
-            this.FormClosing += Lobby_FormClosing;
             lbl_username.Text = Session.Nickname;
             UserLoggedOut = false;
+            
+            // 폼이 렌더링된 뒤 승무패 기록 갱신
+            this.Shown += (_, __) => UpdateRecordWithNewSocket();
         }
 
         // 방 생성
@@ -25,27 +30,30 @@ namespace Omok_Client.Form
         {
             if (!Client.IsConnected)
             {
-                MessageBox.Show("서버에 연결되어 있지 않습니다.");
+                MessageBox.Show("서버에 연결되어 있지 않습니다.", "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
-
-            Client.Send($"CREATE_ROOM|{Session.Pk}|{Session.Nickname}");
-            string response = Client.Receive();
-
-            if (response.StartsWith("JOIN_SUCCESS"))
+            try
             {
-                string[] tokens = response.Split('|');
-                string roomCode = tokens[1];
-                Session.RoomCode = roomCode; // 세션에 방 코드 저장
-
-                OpenGame(roomCode);
+                string response = Client.Request($"CREATE_ROOM|{Session.Pk}|{Session.Nickname}");
+                if (response.StartsWith("JOIN_SUCCESS|"))
+                {
+                    var roomCode = response.Split('|')[1];
+                    Session.RoomCode = roomCode;
+                    OpenGame(roomCode);
+                }
+                else
+                {
+                    MessageBox.Show($"방 생성 실패: {response}", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-            else
+            catch (IOException ex)
             {
-                MessageBox.Show("방 생성 실패");
+                MessageBox.Show($"네트워크 오류: {ex.Message}", "오류", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
+        // 랜덤 참가
         private void btn_re_Click(object sender, EventArgs e)
         {
             if (!Client.IsConnected)
@@ -54,13 +62,10 @@ namespace Omok_Client.Form
                 return;
             }
 
-            Client.Send($"JOIN_RANDOM|{Session.Pk}|{Session.Nickname}");
-            string response = Client.Receive();
-
+            string response = Client.Request($"JOIN_RANDOM|{Session.Pk}|{Session.Nickname}");
             if (response.StartsWith("JOIN_SUCCESS"))
             {
-                string[] tokens = response.Split('|');
-                string roomCode = tokens[1];
+                string roomCode = response.Split('|')[1];
                 OpenGame(roomCode);
             }
             else
@@ -79,12 +84,9 @@ namespace Omok_Client.Form
             }
 
             string inputCode = PromptRoomCode();
-            if (string.IsNullOrWhiteSpace(inputCode))
-                return;
+            if (string.IsNullOrWhiteSpace(inputCode)) return;
 
-            Client.Send($"JOIN_CODE|{Session.Pk}|{inputCode}");
-            
-            string response = Client.Receive();
+            string response = Client.Request($"JOIN_CODE|{Session.Pk}|{inputCode}");
             if (response.StartsWith("JOIN_SUCCESS"))
                 OpenGame(inputCode);
             else
@@ -147,45 +149,99 @@ namespace Omok_Client.Form
             return prompt.ShowDialog() == DialogResult.OK ? input.Text.Trim() : null;
         }
 
-
         private void btn_history_Click(object sender, EventArgs e)
         {
-
+            var historyForm = new History();
+            historyForm.Show(); // Modaless로 Form 표시
         }
 
         private void btn_logout_Click(object sender, EventArgs e)
         {
-            this.Hide();
+            Client.Disconnect();
 
             // 세션 초기화
-            Session.Pk = 0;
-            Session.Nickname = "";
-            Session.RoomCode = "";
-
+            Session.Clear();
             UserLoggedOut = true;
 
             // 현재 Lobby 폼은 완전히 종료
+            this.DialogResult = DialogResult.Retry;
             this.Close();
         }
 
         private void btn_exit_Click(object sender, EventArgs e)
         {
+            Client.Disconnect();
+
+            // 세션 초기화
+            Session.Clear();
+            UserLoggedOut = true;
+
+            this.DialogResult = DialogResult.Abort;
             this.Close();
         }
 
-        void OpenGame(string roomCode)
+        private void OpenGame(string roomCode)
         {
             this.Hide();
+            // using 으로 감싸면 Dispose()도 깔끔하게
+            using (var ingame = new InGame(roomCode))
+            {
+                // ShowDialog를 호출해야 모달이 뜨고 최소한 빈 창이라도 보임
+                ingame.ShowDialog();
+            }
+            // InGame이 닫힌 뒤에야 호출됩니다
+            UpdateRecordWithNewSocket();
+            this.Show();
+        }
 
-            InGame ingame = new InGame(roomCode);
-            ingame.Show();
-            ingame.FormClosed += (s, args) => this.Show(); // 게임 종료 후 로비로 돌아옴
-            
+        private void UpdateRecordWithNewSocket()
+        {
+            lbl_win.Text = lbl_draw.Text = lbl_lose.Text = "0";
+            try
+            {
+                using (var hist = new TcpClient(Client.GetHost(), Client.GetPort()))
+                using (var writer = new StreamWriter(hist.GetStream(), Encoding.UTF8) { AutoFlush = true })
+                using (var reader = new StreamReader(hist.GetStream(), Encoding.UTF8))
+                {
+                    writer.WriteLine($"HISTORY_LOAD|{Session.Pk}");
+                    string msg;
+                    int w = 0, d = 0, l = 0;
+                    while ((msg = reader.ReadLine()) != null)
+                    {
+                        if (msg == "HISTORY_LOAD_END") break;
+                        if (!msg.StartsWith("HISTORY_GAME|")) continue;
+
+                        var t = msg.Split('|');
+                        if (t.Length >= 6)
+                        {
+                            switch (t[5][0])
+                            {
+                                case 'W': w++; break;
+                                case 'D': d++; break;
+                                case 'L': l++; break;
+                            }
+                        }
+                    }
+                    lbl_win.Text = w.ToString();
+                    lbl_draw.Text = d.ToString();
+                    lbl_lose.Text = l.ToString();
+                }
+            }
+            catch (IOException ex)
+            {
+                MessageBox.Show($"히스토리 조회 중 네트워크 오류: {ex.Message}", "오류", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void Lobby_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Application.Exit(); // 애플리케이션 종료
+            // 우측 상단 X 클릭 시 DialogResult가 아직 None이라면　프로그램 종료로 간주함
+            if (this.DialogResult == DialogResult.None)
+            {
+                Client.Disconnect();
+                Session.Clear();
+                this.DialogResult = DialogResult.Abort;
+            }
         }
     }
 }
