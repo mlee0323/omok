@@ -35,5 +35,21 @@ namespace Omok_Server2.Controllers
                 Console.WriteLine($"Chat handling error: {ex.Message}");
             }
         }
+
+        public void HandleEmoji(string clientId, string emojiFileName)
+        {
+            try
+            {
+                var client = ClientManager.Instance.GetClient(clientId);
+                if (client == null) return;
+
+                string emojiPacket = Packet.CreateEmojiPacket(clientId, client.Nickname, emojiFileName);
+                ClientManager.Instance.Broadcast(emojiPacket);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Emoji handling error: {ex.Message}");
+            }
+        }
     }
 } 

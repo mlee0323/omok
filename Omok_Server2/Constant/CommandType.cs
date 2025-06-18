@@ -34,6 +34,7 @@ namespace Omok_Server2.Constant
 
         // CHAT
         CHAT,
+        EMOJI,
 
         INVALID_COMMAND,
         INVALID_FORMAT,

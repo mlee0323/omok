@@ -240,6 +240,15 @@ namespace Omok_Client.Form
                         HandleGameOver(msg);
                     else if (msg.StartsWith("CHAT"))
                         HandleChat(msg);
+<<<<<<< HEAD
+=======
+                    else if (msg.StartsWith("EMOJI"))
+                        HandleEmoji(msg);
+                    else if (msg.StartsWith("SKILL_USE|"))
+                        HandleSkillUse(msg);
+                    else if (msg.StartsWith("STONE_DEL|"))
+                        HandleStoneDelete(msg);
+>>>>>>> 9f546f3 (이민석 - 이모티콘 기능 구현)
 
                     // 기타 메시지 처리...
                 }
@@ -311,6 +320,83 @@ namespace Omok_Client.Form
             }
         }
 
+<<<<<<< HEAD
+=======
+        private void HandleEmoji(string msg)
+        {
+            try
+            {
+                string[] tokens = msg.Split('|');
+                if (tokens.Length >= 4)
+                {
+                    string nickname = tokens[2];
+                    string emojiFileName = tokens[3];
+                    this.Invoke(new Action(() =>
+                    {
+                        if (chatForm != null)
+                        {
+                            chatForm.AppendEmojiMessage(nickname, emojiFileName);
+                        }
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"이모지 메시지 처리 중 오류 발생: {ex.Message}");
+            }
+        }
+
+        private void HandleSkillUse(string msg)
+        {
+            string[] tokens = msg.Split('|');
+            string pk = tokens[1];
+            string nickname = tokens[2];
+            int skillType = int.Parse(tokens[3]);
+
+            if (skillType == 1) // 돌 삭제 스킬
+            {
+                Invoke(new Action(() =>
+                {
+                    // 본인 차례일 때만 사용 가능
+                    if (nickname != Session.Nickname)
+                    {
+                        return;
+                    }
+
+                    
+                    deletingStoneEnabled = true;
+                    
+
+                    // 채팅창에 스킬 사용 메시지 표시
+                    AppendSystemMessage($"{nickname}님이 돌 삭제 스킬을 사용했습니다.");
+                }));
+            }
+
+                if (skillType == 3) // 바둑판 어지르기 스킬
+            {
+                Invoke(new Action(() =>
+                {
+                    // 바둑판 랜덤 배치
+                    board.RandomizeBoard();
+                    
+                    // 채팅창에 메시지 표시
+                    if (chatForm != null)
+                    {
+                        chatForm.AppendSystemMessage($"{nickname}님이 바둑판을 어지르고 갔습니다!");
+                    }
+
+                    // 게임 종료 처리
+                    gameStarted = false;
+                    turnTimer?.Stop();
+                    board.EndGame();
+                }));
+            }
+
+
+
+        }
+
+>>>>>>> 9f546f3 (이민석 - 이모티콘 기능 구현)
         // 버튼 처리
         private void btn_move_Click(object sender, EventArgs e)
         {

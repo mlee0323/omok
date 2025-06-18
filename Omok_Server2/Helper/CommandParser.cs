@@ -26,6 +26,16 @@ namespace Omok_Server2.Helper
                 "GAME_READY" => CommandType.GAME_READY,
                 "GAME_START" => CommandType.GAME_START,
                 "STONE_PUT" => CommandType.STONE_PUT,
+<<<<<<< HEAD
+=======
+                "SKILL_USE" => CommandType.SKILL_USE,
+                "STONE_DEL" => CommandType.STONE_DEL,
+                "HISTORY_LOAD" => CommandType.HISTORY_LOAD,
+                "HISTORY_STONES_LOAD" => CommandType.HISTORY_STONES_LOAD,
+                "CHAT" => CommandType.CHAT,
+                "EMOJI" => CommandType.EMOJI,
+
+>>>>>>> 9f546f3 (이민석 - 이모티콘 기능 구현)
                 _ => CommandType.Unknown
             };
         }
@@ -44,7 +54,17 @@ namespace Omok_Server2.Helper
                 CommandType.GAME_START or
                 CommandType.STONE_PUT
                 => "Game",
+<<<<<<< HEAD
                 
+=======
+
+                CommandType.HISTORY_LOAD or
+                CommandType.HISTORY_STONES_LOAD => "History",
+
+                CommandType.CHAT or
+                CommandType.EMOJI => "Chat",
+
+>>>>>>> 9f546f3 (이민석 - 이모티콘 기능 구현)
                 _ => "Unknown"
             };
         }
