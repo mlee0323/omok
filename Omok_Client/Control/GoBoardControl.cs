@@ -215,6 +215,23 @@ namespace Omok_Client.Control
             }
         }
 
+        // 히스토리용
+        public void ClearBoard()
+        {
+            // 내부 stones 배열 초기화
+            var field = typeof(GoBoardControl).GetField("stones", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var arr = new STONE[19, 19];
+            field.SetValue(this, arr);
+            Invalidate();
+        }
 
+        public void SetStone(int x, int y, STONE stone)
+        {
+            var field = typeof(GoBoardControl).GetField("stones", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var arr = (STONE[,])field.GetValue(this);
+            if (x < 0 || x >= 19 || y < 0 || y >= 19) return;
+            arr[x, y] = stone;
+            Invalidate();
+        }
     }
 }

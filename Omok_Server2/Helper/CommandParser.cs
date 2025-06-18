@@ -27,6 +27,9 @@ namespace Omok_Server2.Helper
                 "GAME_START" => CommandType.GAME_START,
                 "STONE_PUT" => CommandType.STONE_PUT,
                 "SKILL_USE" => CommandType.SKILL_USE,
+                "HISTORY_LOAD" => CommandType.HISTORY_LOAD,
+                "HISTORY_STONES_LOAD" => CommandType.HISTORY_STONES_LOAD,
+
                 _ => CommandType.Unknown
             };
         }
@@ -46,7 +49,10 @@ namespace Omok_Server2.Helper
                 CommandType.STONE_PUT or
                 CommandType.SKILL_USE
                 => "Game",
-                
+
+                CommandType.HISTORY_LOAD or
+                CommandType.HISTORY_STONES_LOAD => "History",
+
                 _ => "Unknown"
             };
         }

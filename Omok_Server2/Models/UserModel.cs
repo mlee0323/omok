@@ -74,7 +74,7 @@ namespace Omok_Server2.Models
             foreach (var line in File.ReadAllLines(userFile))
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
-                
+
                 string[] tokens = line.Split(',');
                 if (tokens.Length < 4) continue;
 

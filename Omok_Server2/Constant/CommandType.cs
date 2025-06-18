@@ -40,7 +40,11 @@ namespace Omok_Server2.Constant
 
         INVALID_COMMAND,
         INVALID_FORMAT,
-        INVALID_PACKET
+        INVALID_PACKET,
+
+        // History
+        HISTORY_LOAD,
+        HISTORY_STONES_LOAD,
     }
 
 }

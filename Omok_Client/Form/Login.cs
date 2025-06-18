@@ -11,10 +11,6 @@ namespace Omok_Client.Form
 {
     public partial class Login : MetroForm
     {
-        private TcpClient m_client;
-        private NetworkStream m_stream;
-        private Thread m_recvThread;
-
         public static List<string> loggedInUsers = new List<string>();
 
         public InGame GameMainScreen;
