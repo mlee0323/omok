@@ -112,7 +112,6 @@
     <Content Include="DB\game.txt" />
     <Content Include="DB\stone.txt" />
     <Content Include="DB\team.txt" />
-    <Content Include="DB\user_stats.txt" />
     <Content Include="DB\user.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

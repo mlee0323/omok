@@ -4,14 +4,11 @@ using Omok_Client.Network;
 using Omok_Client.Util;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Net.Sockets;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Omok_Client.Form
@@ -27,9 +24,9 @@ namespace Omok_Client.Form
             public int Skill;
             public string User;
         }
+        private int gamePk;
         private List<StoneInfo> currentStones = new List<StoneInfo>();
         private int currentIndex;
-
 
         public History()
         {
@@ -45,6 +42,10 @@ namespace Omok_Client.Form
             LoadBadukpan();
 
             lbl_put.Text = "";
+            lbl_skill3.Visible = false;
+
+            btn_prev.Enabled = false;
+            btn_next.Enabled = false;
         }
 
         private void History_Load(object sender, EventArgs e)
@@ -69,13 +70,17 @@ namespace Omok_Client.Form
             try
             {
                 lv_game.Items.Clear();
-                Client.Send($"HISTORY_LOAD|{Session.Pk}");
-                string msg;
-                while ((msg = Client.Receive()) != null)
+                using (var hist = new TcpClient(Client.GetHost(), Client.GetPort()))
+                using (var writer = new StreamWriter(hist.GetStream(), Encoding.UTF8) { AutoFlush = true })
+                using (var reader = new StreamReader(hist.GetStream(), Encoding.UTF8))
                 {
-                    if (msg == "HISTORY_LOAD_END") break;
-                    if (msg.StartsWith("HISTORY_GAME|"))
+                    writer.WriteLine($"HISTORY_LOAD|{Session.Pk}");
+                    string msg;
+                    while ((msg = reader.ReadLine()) != null)
                     {
+                        if (msg == "HISTORY_LOAD_END") break;
+                        if (!msg.StartsWith("HISTORY_GAME|")) continue;
+
                         var t = msg.Split('|');
 
                         // 승, 무, 패 파싱
@@ -92,7 +97,7 @@ namespace Omok_Client.Form
                                 win = "패배";
                                 break;
                         }
-                        
+
                         // 시간 파싱
                         var start = DateTime.ParseExact(t[3].Trim(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
                         var end = DateTime.ParseExact(t[4].Trim(), "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
@@ -124,7 +129,10 @@ namespace Omok_Client.Form
         {
             if (lv_game.SelectedItems.Count == 0) return;
             var sel = lv_game.SelectedItems[0];
-            int gamePk = (int)sel.Tag;
+            
+            if (gamePk == (int)sel.Tag) return;
+            
+            gamePk = (int)sel.Tag;
             LoadStones(gamePk);
             if (currentStones.Count > 0)
             {
@@ -138,23 +146,29 @@ namespace Omok_Client.Form
             try
             {
                 currentStones.Clear();
-                Client.Send($"HISTORY_STONES_LOAD|{gamePk}");
-                string msg;
-                while ((msg = Client.Receive()) != null)
+
+                using (var hist = new TcpClient(Client.GetHost(), Client.GetPort()))
+                using (var writer = new StreamWriter(hist.GetStream(), Encoding.UTF8) { AutoFlush = true })
+                using (var reader = new StreamReader(hist.GetStream(), Encoding.UTF8))
                 {
-                    if (msg == "HISTORY_STONES_LOAD_END") break;
-                    if (msg.StartsWith("HISTORY_STONE|"))
+                    writer.WriteLine($"HISTORY_STONES_LOAD|{gamePk}");
+                    string msg;
+                    while ((msg = reader.ReadLine()) != null)
                     {
-                        var t = msg.Split('|');
-                        currentStones.Add(new StoneInfo
+                        if (msg == "HISTORY_STONES_LOAD_END") break;
+                        if (msg.StartsWith("HISTORY_STONE|"))
                         {
-                            Turn = int.Parse(t[1]),
-                            X = int.Parse(t[3]),
-                            Y = int.Parse(t[4]),
-                            Color = t[5][0],
-                            Skill = int.Parse(t[6]),
-                            User = t[2]
-                        });
+                            var t = msg.Split('|');
+                            currentStones.Add(new StoneInfo
+                            {
+                                Turn = int.Parse(t[1]),
+                                X = int.Parse(t[3]),
+                                Y = int.Parse(t[4]),
+                                Color = t[5][0],
+                                Skill = int.Parse(t[6]),
+                                User = t[2]
+                            });
+                        }
                     }
                 }
             }
@@ -167,13 +181,17 @@ namespace Omok_Client.Form
         private void RefreshBoard()
         {
             board.ClearBoard();
+            lbl_skill3.Visible = false;
             for (int i = 0; i <= currentIndex && i < currentStones.Count; i++)
             {
                 var s = currentStones[i];
-                board.SetStone(s.X, s.Y, s.Color == 'B' ? GoBoardControl.STONE.black : GoBoardControl.STONE.white);
+                board.SetStone(s.X, s.Y, s.Color, s.Skill);
             }
+            
             btn_prev.Enabled = currentIndex > 0;
             btn_next.Enabled = currentIndex < currentStones.Count - 1;
+
+            lbl_put.Text = string.Empty;
             if (currentIndex >= 0 && currentIndex < currentStones.Count)
             {
                 lbl_put.Text = $"턴 {currentStones[currentIndex].Turn}: {currentStones[currentIndex].User}";
@@ -183,11 +201,15 @@ namespace Omok_Client.Form
                     case 0:
                         lbl_put.Text += $" ({currentStones[currentIndex].X}, {currentStones[currentIndex].Y}) 착수";
                         break;
+                    case 1:
+                        lbl_put.Text += $" 지우기 스킬 발동! ({currentStones[currentIndex].X}, {currentStones[currentIndex].Y}) 삭제";
+                        break;
+                    case 3:
+                        lbl_put.Text += $" 엎기 스킬 발동!";
+                        lbl_skill3.Visible = true;
+                        break;
                 }
-            }
-                
-            else
-                lbl_put.Text = string.Empty;
+            }   
         }
 
         private void btn_prev_Click(object sender, EventArgs e)

@@ -257,12 +257,23 @@ namespace Omok_Client.Control
             Invalidate();
         }
 
-        public void SetStone(int x, int y, STONE stone)
+        public void SetStone(int x, int y, char color, int skill)
         {
             var field = typeof(GoBoardControl).GetField("stones", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             var arr = (STONE[,])field.GetValue(this);
+            
             if (x < 0 || x >= 19 || y < 0 || y >= 19) return;
-            arr[x, y] = stone;
+
+            if (skill == 0)
+            {
+                if (color == 'B')
+                    arr[x, y] = STONE.black;
+                else
+                    arr[x, y] = STONE.white;
+            }                
+            else if (skill == 1)
+                arr[x, y] = STONE.none;
+
             Invalidate();
         }
     }

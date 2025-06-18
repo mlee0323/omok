@@ -29,27 +29,17 @@ namespace Omok_Server2.Data
         }
 
         public int GetPK() { return pk; }
-
         public string GetName() { return name; }
-
         public int GetTeam() { return team; }
-
         public char GetStoneColor() { return stoneColor; }
-
         public bool GetReady() { return ready; }
-
         public char GetWin() { return win; }
-
         public int GetTeamPK() { return team_pk; }
 
         public void SetTeam(int team) { this.team = team; }
-
         public void SetStoneColor(char stoneColor) { this.stoneColor = stoneColor; }
-
-        public void SetReady() { ready = true ? false : true; 
-        }
+        public void SetReady(bool ready) { this.ready = ready; }
         public void SetWin(char win) { this.win = win; }
-
         public void SetTeamPk(int team_pk) { this.team_pk = team_pk; }
-    };
+    }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
-using Omok_Server2.Network;
 using Omok_Server2.Models;
 
 namespace Omok_Server2.Data
@@ -13,6 +13,9 @@ namespace Omok_Server2.Data
         // ───────────────────────────────
         public string RoomCode { get; }
         public int MaxPlayers { get; }
+
+        private int gameResult = 0;     // -1 -> 무승부, 0 -> 승패 결정 아직 안남, team 값 -> 승리팀
+
         public IReadOnlyList<ClientHandler> Clients => _clients.AsReadOnly();
         public IReadOnlyDictionary<ClientHandler, int> Teams => _teams;
 
@@ -44,7 +47,8 @@ namespace Omok_Server2.Data
         private string currentTurnTeam = "A";
         private List<ClientHandler> teamAOrder = new();
         private List<ClientHandler> teamBOrder = new();
-        private int[,] board = new int[19, 19]; // 0: 없음, 1: A, 2: B
+        private int boardSize;
+        private int[,] board; // 0: 없음, 1: A, 2: B
 
         // 팀별로 인덱스 따로 관리
         private int indexA = -1;
@@ -63,7 +67,43 @@ namespace Omok_Server2.Data
         {
             RoomCode = code;
             MaxPlayers = maxPlayers;
+
+            boardSize = 19;
+            board = new int[boardSize, boardSize];
         }
+
+        /// ───────────────────────────────
+        /// 초기화
+        /// ───────────────────────────────
+        public void ResetGame()
+        {
+            // 1. 방 상태 변경
+            gameStarted = false;
+            gameResult = 0;
+
+            // 2. 타이머 멈추기
+            StopTurnTimer();
+            
+            // 3. 변수 초기화
+            //turnIndex = 0;
+            currentTurnTeam = "A";
+            teamAOrder.Clear();
+            teamBOrder.Clear();
+
+            // 4. 바둑판 초기화
+            board = new int[boardSize, boardSize];
+            stoneCount = 0;
+
+            // 5. 플레이어들의 준비 상태 풀기
+            foreach (ClientHandler c in _clients)
+            {
+                readyStatus[c] = false;
+
+                // _players
+                _players[c].SetReady(false);
+            }
+        }
+
 
         // ───────────────────────────────
         // 참가 / 퇴장 / 팀 관리
@@ -78,10 +118,10 @@ namespace Omok_Server2.Data
 
             // _players
             _players[client] = new Player(
-                                    int.Parse(client.getUserPk()),
-                                    client.getNickname(),
-                                    (_clients.Count % 2 == 0) ? 2 : 1
-                               );
+                    int.Parse(client.getUserPk()),
+                    client.getNickname(),
+                    (_clients.Count % 2 == 0) ? 2 : 1
+            );
 
             return true;
         }
@@ -127,7 +167,7 @@ namespace Omok_Server2.Data
 
             // _players
             if (!_clients.Contains(client)) return false;
-            _players[client].SetReady();
+            _players[client].SetReady(ready);
 
             return true;
         }
@@ -216,20 +256,6 @@ namespace Omok_Server2.Data
             //AdvanceTurn(); // 바로 턴 시작
         }
 
-
-        public void ResetGame()
-        {
-            gameStarted = false;
-            StopTurnTimer();
-            //turnIndex = 0;
-            currentTurnTeam = "A";
-            board = new int[19, 19];
-            teamAOrder.Clear();
-            teamBOrder.Clear();
-            foreach (var key in readyStatus.Keys.ToList())
-                readyStatus[key] = false;
-        }
-
         // ───────────────────────────────
         // 턴 관련 처리
         // ───────────────────────────────
@@ -307,7 +333,7 @@ namespace Omok_Server2.Data
         // ───────────────────────────────
         public bool PlaceStone(int x, int y, ClientHandler client)
         {
-            if (x < 0 || x >= 19 || y < 0 || y >= 19) return false;
+            if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) return false;
             if (board[x, y] != 0) return false;
 
             board[x, y] = (int)GetTeam(client);
@@ -321,14 +347,23 @@ namespace Omok_Server2.Data
             return CheckWin(x, y, board[x, y]);
 
         }
-        public bool DeleteStone(int x,int y, int team)
+        public bool DeleteStone(int x,int y, int team, ClientHandler client)
         {
-            if (x < 0 || x >= 19 || y < 0 || y >= 19) return false;
+            if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) return false;
             board[x, y] = 0;
 
             stoneCount--;
-            return CheckWin(x, y, team);
 
+            // 삭제한 돌 기록
+            if (_players[client] != null)
+                GameModel.RecordStone(room_pk, _players[client].GetPK(), _players[client].GetName(), _players[client].GetTeam(), x, y, _players[client].GetStoneColor(), 1); // 지우기는 skill을 1로 설정
+            return CheckWin(x, y, team);
+        }
+
+        // 엎기 처리
+        public void TurnOver()
+        {
+            UpdateResult();
         }
 
         private bool CheckWin(int x, int y, int team)
@@ -346,34 +381,60 @@ namespace Omok_Server2.Data
                 {
                     int nx = x + dir[0] * d;
                     int ny = y + dir[1] * d;
-                    if (nx < 0 || ny < 0 || nx >= 19 || ny >= 19) break;
+                    if (nx < 0 || ny < 0 || nx >= boardSize || ny >= boardSize) break;
                     if (board[nx, ny] == team) count++; else break;
                 }
                 for (int d = 1; d <= 4; d++)
                 {
                     int nx = x - dir[0] * d;
                     int ny = y - dir[1] * d;
-                    if (nx < 0 || ny < 0 || nx >= 19 || ny >= 19) break;
+                    if (nx < 0 || ny < 0 || nx >= boardSize || ny >= boardSize) break;
                     if (board[nx, ny] == team) count++; else break;
                 }
                 if (count >= 5)
                 {
                     // DB 등록
-                    GameModel.UpdateRoom(room_pk, RoomCode, StartTime, DateTime.Now);
-                    foreach (var c in _clients)
-                        if (c != null)
-                            GameModel.UpdateTeam(_players[c].GetTeamPK(),
-                                                room_pk,
-                                                _players[c].GetPK(),
-                                                _players[c].GetTeam(),
-                                                _players[c].GetStoneColor(),
-                                                _players[c].GetTeam() == team ? 'W' : 'L'
-                            );
+                    SetGameResult(team);
+                    UpdateResult();
+                    return true;
+                }
 
+                // 더 이상 둘 곳이 없으면 무승부 처리
+                if (stoneCount == boardSize * boardSize)
+                {
+                    SetGameResult(-1);
+                    UpdateResult();
                     return true;
                 }
             }
             return false;
+        }
+
+        private void UpdateResult()
+        {
+            GameModel.UpdateRoom(room_pk, RoomCode, StartTime, DateTime.Now);
+            foreach (var c in _clients)
+                if (c != null)
+                {
+                    int team = _players[c].GetTeam();
+                    
+                    char win;
+                    if (gameResult == team)
+                        win = 'W'; 
+                    else if (gameResult == -1) // 팀이 -1이면 무승부 처리
+                        win = 'D';
+                    else
+                        win = 'L';
+
+                    GameModel.UpdateTeam(
+                            _players[c].GetTeamPK(),
+                            room_pk,
+                            _players[c].GetPK(),
+                            _players[c].GetTeam(),
+                            _players[c].GetStoneColor(),
+                            win
+                    );
+                }
         }
 
         private List<ClientHandler> GetTeamMembers(int teamNumber) =>
@@ -401,6 +462,19 @@ namespace Omok_Server2.Data
         {
             foreach (var c in _clients)
                 if (c != client) c.Send(msg);
+        }
+
+        /// ───────────────────────────────
+        /// Getter & Setter
+        /// ───────────────────────────────
+        public int GetGameResult()
+        {
+            return gameResult;
+        }
+
+        public void SetGameResult(int gameResult)
+        {
+            this.gameResult = gameResult;
         }
     }
 }

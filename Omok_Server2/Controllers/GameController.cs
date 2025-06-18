@@ -128,7 +128,7 @@ namespace Omok_Server2.Controllers
 
             if (win)
             {
-                room.Broadcast($"GAME_OVER|{team}");
+                room.Broadcast($"GAME_OVER|{room.GetGameResult()}");
                 room.ResetGame();
             }
             else
@@ -158,7 +158,7 @@ namespace Omok_Server2.Controllers
             if (team == 0) return "STONE_PUT_FAIL|NO_TEAM";
 
             // 돌 삭제
-            room.DeleteStone(x, y,team);
+            room.DeleteStone(x, y,team, client);
 
             room.Broadcast($"STONE_DEL|{x}|{y}|{client.getNickname()}|{team}");
             //room.AdvanceTurn();
@@ -184,7 +184,9 @@ namespace Omok_Server2.Controllers
             // 바둑판 엎기 스킬인 경우 게임 종료
             if (skillType == 3)
             {
-                room.Broadcast($"GAME_OVER|0"); // 0은 무승부를 의미
+                room.SetGameResult(-1);                                 // 무승부 처리
+                room.TurnOver();
+                room.Broadcast($"GAME_OVER|{room.GetGameResult()}");    // 0은 무승부를 의미
                 room.ResetGame();
             }
 

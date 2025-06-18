@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.pn_board = new MetroFramework.Controls.MetroPanel();
+            this.lbl_skill3 = new System.Windows.Forms.Label();
             this.btn_next = new System.Windows.Forms.Button();
             this.btn_prev = new System.Windows.Forms.Button();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
@@ -38,10 +39,12 @@
             this.ch_startTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ch_endTime = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.lbl_put = new System.Windows.Forms.Label();
+            this.pn_board.SuspendLayout();
             this.SuspendLayout();
             // 
             // pn_board
             // 
+            this.pn_board.Controls.Add(this.lbl_skill3);
             this.pn_board.HorizontalScrollbarBarColor = true;
             this.pn_board.HorizontalScrollbarHighlightOnWheel = false;
             this.pn_board.HorizontalScrollbarSize = 10;
@@ -52,6 +55,22 @@
             this.pn_board.VerticalScrollbarBarColor = true;
             this.pn_board.VerticalScrollbarHighlightOnWheel = false;
             this.pn_board.VerticalScrollbarSize = 10;
+            // 
+            // lbl_skill3
+            // 
+            this.lbl_skill3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbl_skill3.AutoSize = true;
+            this.lbl_skill3.BackColor = System.Drawing.Color.Transparent;
+            this.lbl_skill3.Font = new System.Drawing.Font("맑은 고딕", 48F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(129)));
+            this.lbl_skill3.ForeColor = System.Drawing.Color.Red;
+            this.lbl_skill3.Location = new System.Drawing.Point(146, 201);
+            this.lbl_skill3.Name = "lbl_skill3";
+            this.lbl_skill3.Size = new System.Drawing.Size(229, 86);
+            this.lbl_skill3.TabIndex = 2;
+            this.lbl_skill3.Text = "엎어짐";
+            this.lbl_skill3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // btn_next
             // 
@@ -144,6 +163,8 @@
             this.Name = "History";
             this.Text = "전적";
             this.Load += new System.EventHandler(this.History_Load);
+            this.pn_board.ResumeLayout(false);
+            this.pn_board.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -161,5 +182,6 @@
         private System.Windows.Forms.ColumnHeader ch_startTime;
         private System.Windows.Forms.ColumnHeader ch_endTime;
         private System.Windows.Forms.Label lbl_put;
+        private System.Windows.Forms.Label lbl_skill3;
     }
 }
