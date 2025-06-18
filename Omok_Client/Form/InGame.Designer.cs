@@ -55,6 +55,7 @@ namespace Omok_Client.Form
             this.btn_music = new MetroFramework.Controls.MetroButton();
             this.btn_chat = new MetroFramework.Controls.MetroButton();
             this.MySelfLabel = new MetroFramework.Controls.MetroLabel();
+            this.deletingStone = new MetroFramework.Controls.MetroLabel();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -79,7 +80,8 @@ namespace Omok_Client.Form
             this.btn_skill_1.Name = "btn_skill_1";
             this.btn_skill_1.Size = new System.Drawing.Size(145, 32);
             this.btn_skill_1.TabIndex = 1;
-            this.btn_skill_1.Text = "무르기";
+            this.btn_skill_1.Text = "지우기";
+            this.btn_skill_1.Click += new System.EventHandler(this.btn_skill_1_Click);
             // 
             // btn_skill_2
             // 
@@ -358,11 +360,20 @@ namespace Omok_Client.Form
             this.MySelfLabel.Size = new System.Drawing.Size(0, 0);
             this.MySelfLabel.TabIndex = 30;
             // 
+            // deletingStone
+            // 
+            this.deletingStone.AutoSize = true;
+            this.deletingStone.Location = new System.Drawing.Point(185, 544);
+            this.deletingStone.Name = "deletingStone";
+            this.deletingStone.Size = new System.Drawing.Size(0, 0);
+            this.deletingStone.TabIndex = 31;
+            // 
             // InGame
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1170, 650);
+            this.Controls.Add(this.deletingStone);
             this.Controls.Add(this.MySelfLabel);
             this.Controls.Add(this.lbl_timer);
             this.Controls.Add(this.groupBox6);
@@ -419,5 +430,6 @@ namespace Omok_Client.Form
         private System.Windows.Forms.ListView lv_teamA;
         private System.Windows.Forms.ListView lv_teamB;
         private MetroFramework.Controls.MetroLabel MySelfLabel;
+        private MetroFramework.Controls.MetroLabel deletingStone;
     }
 }

@@ -23,6 +23,14 @@ namespace Omok_Client.Control
         private string myTeam = "A";
         private string currentTurnTeam = "A";
 
+        private bool deletingStoneEnabled = false;
+
+        public void SetDeletingStoneEnabled(bool enabled)
+        {
+            deletingStoneEnabled = enabled;
+        }
+
+
         const int flowerSize = 6;
 
         public string MyTeam
@@ -69,6 +77,12 @@ namespace Omok_Client.Control
             //Invalidate();
 
             stones[x,y] = (team == 1) ? STONE.black : STONE.white;
+            Invalidate();
+        }
+        public void DeleteStone(int x,int y)
+        {
+            if (x < 0 || x >= 19 || y < 0 || y >= 19) return;
+            stones[x,y] = STONE.none;
             Invalidate();
         }
 
@@ -126,7 +140,9 @@ namespace Omok_Client.Control
 
         protected override void OnMouseClick(MouseEventArgs e)
         {
+
             base.OnMouseClick(e);
+
             if (!gameStarted || gameDone) return;
             if (currentTurnTeam != myTeam) return;
 
@@ -141,9 +157,22 @@ namespace Omok_Client.Control
             int x = (e.X - originX + gridSize / 2) / gridSize;
             int y = (e.Y - originY + gridSize / 2) / gridSize;
 
+            if (deletingStoneEnabled)
+            {
+                if (x >= 0 && x < 19 && y >= 0 && y < 19 && stones[x, y] != STONE.none)
+                {
+                    Client.Send($"STONE_DEL|{Session.Pk}|{Session.Nickname}|{x}|{y}");
+                }
+
+                deletingStoneEnabled = false;
+               
+            }
+
+
             if (x >= 0 && x < 19 && y >= 0 && y < 19 && stones[x, y] == STONE.none)
             {
                 Client.Send($"STONE_PUT|{Session.Pk}|{Session.Nickname}|{x}|{y}");
+                                  
             }
         }
 
