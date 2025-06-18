@@ -58,11 +58,15 @@
     <Compile Include="Control\ChatForm.Designer.cs">
       <DependentUpon>ChatForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\EmojiForm.cs" />
+    <Compile Include="Form\EmojiForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form\EmojiForm.Designer.cs">
       <DependentUpon>EmojiForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form\History.cs" />
+    <Compile Include="Form\History.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Form\History.Designer.cs">
       <DependentUpon>History.cs</DependentUpon>
     </Compile>

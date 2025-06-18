@@ -16,8 +16,7 @@ namespace Omok_Client.Control
         {
             InitializeComponent();
             txt_chat.ReadOnly = true;
-            
-            // btn_emj 버튼에 클릭 이벤트 추가
+            txt_chat.BackColor = Color.White;
             btn_emj.Click += btn_emj_Click;
         }
 
@@ -29,11 +28,9 @@ namespace Omok_Client.Control
                 {
                     if (emojiForm.ShowDialog() == DialogResult.OK)
                     {
-                        // 선택된 이모지를 채팅으로 전송
                         string selectedEmoji = emojiForm.SelectedEmoji;
                         if (!string.IsNullOrEmpty(selectedEmoji))
                         {
-                            // 이모지 전송 (특별한 형식으로 전송)
                             Client.Send($"EMOJI|{Session.Pk}|{Session.Nickname}|{selectedEmoji}");
                         }
                     }
@@ -107,7 +104,6 @@ namespace Omok_Client.Control
             txt_chat.SelectionColor = Color.Black;
             txt_chat.AppendText($"{nickname}: ");
 
-            // 이미지 삽입
             string imgPath = Path.Combine(Application.StartupPath, "img", emojiFileName);
             if (!File.Exists(imgPath))
             {
@@ -119,12 +115,20 @@ namespace Omok_Client.Control
             {
                 try
                 {
-                    using (Image img = Image.FromFile(imgPath))
+                    using (Image originalImg = Image.FromFile(imgPath))
                     {
-                        Clipboard.SetImage(img);
-                        txt_chat.ReadOnly = false; // 이미지 삽입 위해 잠깐 해제
+                        Bitmap bmp = new Bitmap(originalImg.Width, originalImg.Height);
+                        using (Graphics g = Graphics.FromImage(bmp))
+                        {
+                            g.Clear(Color.White);
+                            g.DrawImage(originalImg, 0, 0, originalImg.Width, originalImg.Height);
+                        }
+                        
+                        txt_chat.ReadOnly = false;
+                        Clipboard.SetImage(bmp);
                         txt_chat.Paste();
                         txt_chat.ReadOnly = true;
+                        bmp.Dispose();
                     }
                 }
                 catch (Exception ex)

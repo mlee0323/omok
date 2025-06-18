@@ -41,7 +41,6 @@ namespace Omok_Server2
 
             string rawCmd = tokens[0];
             
-            // 채팅 패킷 처리
             if (rawCmd == "CHAT" && tokens.Length >= 4)
             {
                 if (string.IsNullOrEmpty(userpk))
@@ -53,7 +52,6 @@ namespace Omok_Server2
                 return;
             }
 
-            // 이모지 패킷 처리
             if (rawCmd == "EMOJI" && tokens.Length >= 4)
             {
                 if (string.IsNullOrEmpty(userpk))

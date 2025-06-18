@@ -31,13 +31,15 @@ namespace Omok_Client.Form
             this.FormBorderStyle = FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
+            this.BackColor = Color.White;
 
             TableLayoutPanel panel = new TableLayoutPanel
             {
                 Dock = DockStyle.Fill,
                 ColumnCount = 4,
                 RowCount = 4,
-                AutoSize = true
+                AutoSize = true,
+                BackColor = Color.White
             };
 
             for (int i = 1; i <= 16; i++)
@@ -50,7 +52,8 @@ namespace Omok_Client.Form
                         Size = new Size(80, 80),
                         SizeMode = PictureBoxSizeMode.Zoom,
                         Image = Image.FromFile(imagePath),
-                        Tag = $"{i}.png"
+                        Tag = $"{i}.png",
+                        BackColor = Color.Transparent
                     };
 
                     pb.DoubleClick += PictureBox_DoubleClick;
