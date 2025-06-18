@@ -38,10 +38,16 @@ namespace Omok_Network
         }
 
         public const string CHAT = "CHAT";
+        public const string EMOJI = "EMOJI";
 
         public static string CreateChatPacket(string pk, string nickname, string message)
         {
             return $"{CHAT}|{pk}|{nickname}|{message}";
+        }
+
+        public static string CreateEmojiPacket(string pk, string nickname, string emojiFileName)
+        {
+            return $"{EMOJI}|{pk}|{nickname}|{emojiFileName}";
         }
     }
 

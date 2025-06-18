@@ -53,6 +53,18 @@ namespace Omok_Server2
                 return;
             }
 
+            // 이모지 패킷 처리
+            if (rawCmd == "EMOJI" && tokens.Length >= 4)
+            {
+                if (string.IsNullOrEmpty(userpk))
+                {
+                    userpk = tokens[1];
+                    ClientManager.Instance.AddClient(userpk, this);
+                }
+                ChatController.Instance.HandleEmoji(tokens[1], tokens[3]);
+                return;
+            }
+
             CommandType cmd = CommandParser.Parse(rawCmd);
             string category = CommandParser.GetCategory(cmd);
             string response = "";
