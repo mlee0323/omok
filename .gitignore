@@ -37,3 +37,6 @@ Desktop.ini
 
 # ASP.NET 특화
 App_Data/
+
+# DB
+Omok_Server2/DB/
