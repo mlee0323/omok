@@ -17,18 +17,15 @@ namespace Omok_Client.Network
         private static StreamReader reader;
         private static StreamWriter writer;
 
-        private static string host = "127.0.0.1";
-        private static int port = 9999;
+        private static readonly string host = "127.0.0.1";
+        private static readonly int port = 9999;
 
         // 서버 연결 상태를 반환
         public static bool IsConnected => tcpClient != null && tcpClient.Connected;
 
         // 서버에 연결
-        public static bool Connect(string _host = "127.0.0.1", int _port = 9999)
+        public static bool Connect()
         {
-            host = _host;
-            port = _port;
-
             try
             {
                 tcpClient = new TcpClient(host, port);
@@ -37,10 +34,16 @@ namespace Omok_Client.Network
                 writer = new StreamWriter(stream, Encoding.UTF8) { AutoFlush = true };
                 return true;
             }
-            catch
+            catch (SocketException ex)
             {
-                return false;
+                Console.WriteLine($"[Connect] SocketException – 코드: {ex.SocketErrorCode}, 메시지: {ex.Message}");
+                
             }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[Connect] 예외 발생: {ex.GetType().Name} – {ex.Message}");
+            }
+            return false;
         }
 
         // 서버 연결을 종료

@@ -94,11 +94,11 @@ namespace Omok_Server2
                     break;
 
                 default:
-                    Log("알 수 없는 명령어: " + msg);
+                    Log("알 수 없는 명령어");
                     break;
             }
 
-            if (response != "")
+            if (!string.IsNullOrEmpty(response))
             {
                 Log($"응답: {response}");
                 writer.WriteLine(response);
@@ -126,8 +126,8 @@ namespace Omok_Server2
             }
             catch (Exception e)
             {
-                // Log(e.ToString());
-                Log("클라이언트 통신 오류");
+                Log(e.ToString());
+                // Log("클라이언트 통신 오류");
             }
             finally
             {

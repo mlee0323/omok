@@ -171,7 +171,8 @@ namespace Omok_Server2.Data
 
             // _players
             if (!_players.ContainsKey(client)) return false;
-            _players[client].SetTeam(cur == 1 ? 2 : 1);
+            
+            _players[client].SetTeam(_teams[client]);
 
             return true;
         }
@@ -189,7 +190,10 @@ namespace Omok_Server2.Data
             do
             {
                 foreach (var c in nonReadyClients)
+                {
                     _teams[c] = random.Next(1, 3);
+                    _players[c].SetTeam(_teams[c]);
+                }
                 attempts++;
             } while (!HasTwoTeams() && attempts< 5);
 
