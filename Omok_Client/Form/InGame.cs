@@ -330,6 +330,8 @@ namespace Omok_Client.Form
                         HandleGameOver(msg);
                     else if (msg.StartsWith("CHAT"))
                         HandleChat(msg);
+                    else if (msg.StartsWith("EMOJI"))
+                        HandleEmoji(msg);
                     else if (msg.StartsWith("SKILL_USE|"))
                         HandleSkillUse(msg);
                     else if (msg.StartsWith("STONE_DEL|"))
@@ -404,6 +406,30 @@ namespace Omok_Client.Form
             catch (Exception ex)
             {
                 MessageBox.Show($"채팅 메시지 처리 중 오류 발생: {ex.Message}");
+            }
+        }
+
+        private void HandleEmoji(string msg)
+        {
+            try
+            {
+                string[] tokens = msg.Split('|');
+                if (tokens.Length >= 4)
+                {
+                    string nickname = tokens[2];
+                    string emojiFileName = tokens[3];
+                    this.Invoke(new Action(() =>
+                    {
+                        if (chatForm != null)
+                        {
+                            chatForm.AppendEmojiMessage(nickname, emojiFileName);
+                        }
+                    }));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"이모지 메시지 처리 중 오류 발생: {ex.Message}");
             }
         }
 

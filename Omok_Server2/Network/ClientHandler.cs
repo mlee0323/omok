@@ -41,7 +41,6 @@ namespace Omok_Server2
 
             string rawCmd = tokens[0];
             
-            // 채팅 패킷 처리
             if (rawCmd == "CHAT" && tokens.Length >= 4)
             {
                 if (string.IsNullOrEmpty(userpk))
@@ -50,6 +49,17 @@ namespace Omok_Server2
                     ClientManager.Instance.AddClient(userpk, this);
                 }
                 ChatController.Instance.HandleChat(tokens[1], tokens[3]);
+                return;
+            }
+
+            if (rawCmd == "EMOJI" && tokens.Length >= 4)
+            {
+                if (string.IsNullOrEmpty(userpk))
+                {
+                    userpk = tokens[1];
+                    ClientManager.Instance.AddClient(userpk, this);
+                }
+                ChatController.Instance.HandleEmoji(tokens[1], tokens[3]);
                 return;
             }
 

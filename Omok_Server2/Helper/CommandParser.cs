@@ -30,6 +30,8 @@ namespace Omok_Server2.Helper
                 "STONE_DEL" => CommandType.STONE_DEL,
                 "HISTORY_LOAD" => CommandType.HISTORY_LOAD,
                 "HISTORY_STONES_LOAD" => CommandType.HISTORY_STONES_LOAD,
+                "CHAT" => CommandType.CHAT,
+                "EMOJI" => CommandType.EMOJI,
 
                 _ => CommandType.Unknown
             };
@@ -54,6 +56,9 @@ namespace Omok_Server2.Helper
 
                 CommandType.HISTORY_LOAD or
                 CommandType.HISTORY_STONES_LOAD => "History",
+
+                CommandType.CHAT or
+                CommandType.EMOJI => "Chat",
 
                 _ => "Unknown"
             };
