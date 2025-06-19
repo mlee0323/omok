@@ -83,5 +83,14 @@ namespace Omok_Client.Form
                 this.DialogResult = DialogResult.Cancel;
             }
         }
+
+        private void login_pw_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter && login_btn.Enabled)
+            {
+                login_btn.PerformClick();
+                e.Handled = true;
+            }
+        }
     }
 }

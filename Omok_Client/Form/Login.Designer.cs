@@ -51,7 +51,7 @@
             this.login_btn.Margin = new System.Windows.Forms.Padding(1);
             this.login_btn.Name = "login_btn";
             this.login_btn.Size = new System.Drawing.Size(111, 47);
-            this.login_btn.TabIndex = 1;
+            this.login_btn.TabIndex = 2;
             this.login_btn.Text = "로그인";
             this.login_btn.Theme = MetroFramework.MetroThemeStyle.Light;
             this.login_btn.Click += new System.EventHandler(this.login_btn_Click);
@@ -62,7 +62,7 @@
             this.signup_btn.Margin = new System.Windows.Forms.Padding(1);
             this.signup_btn.Name = "signup_btn";
             this.signup_btn.Size = new System.Drawing.Size(111, 37);
-            this.signup_btn.TabIndex = 2;
+            this.signup_btn.TabIndex = 3;
             this.signup_btn.Text = "회원가입";
             this.signup_btn.Click += new System.EventHandler(this.signup_btn_Click);
             // 
@@ -72,7 +72,7 @@
             this.exit_btn.Margin = new System.Windows.Forms.Padding(1);
             this.exit_btn.Name = "exit_btn";
             this.exit_btn.Size = new System.Drawing.Size(111, 37);
-            this.exit_btn.TabIndex = 3;
+            this.exit_btn.TabIndex = 4;
             this.exit_btn.Text = "나가기";
             this.exit_btn.Click += new System.EventHandler(this.exit_btn_Click);
             // 
@@ -82,8 +82,9 @@
             this.login_pw.Margin = new System.Windows.Forms.Padding(1);
             this.login_pw.Name = "login_pw";
             this.login_pw.Size = new System.Drawing.Size(166, 19);
-            this.login_pw.TabIndex = 5;
+            this.login_pw.TabIndex = 1;
             this.login_pw.TextChanged += new System.EventHandler(this.login_TextChanged);
+            this.login_pw.KeyDown += new System.Windows.Forms.KeyEventHandler(this.login_pw_KeyDown);
             // 
             // label1
             // 
@@ -109,7 +110,7 @@
             this.Controls.Add(this.login_id);
             this.Margin = new System.Windows.Forms.Padding(1);
             this.Name = "Login";
-            this.Padding = new System.Windows.Forms.Padding(12, 55, 12, 9);
+            this.Padding = new System.Windows.Forms.Padding(12, 60, 12, 9);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Login_FormClosing);
             this.Load += new System.EventHandler(this.Login_Load);
             this.ResumeLayout(false);
