@@ -21,10 +21,6 @@ namespace Omok_Server2.Controllers
 
                 case "JOIN_RANDOM":
                     return HandleJoinRandom(tokens, client);
-
-                case "CHANGE_TEAM":
-                    return HandleChangeTeam(tokens, client);
-
                 default:
                     return "INVALID_ROOM_COMMAND";
             }
@@ -82,24 +78,6 @@ namespace Omok_Server2.Controllers
                 return "JOIN_FAIL|NOT_FOUND_OR_FULL";
 
             return $"JOIN_SUCCESS|{room.RoomCode}";
-        }
-
-        private static string HandleChangeTeam(string[] tokens, ClientHandler client)
-        {
-            if (tokens.Length < 3)
-                return "TEAM_FAIL|INVALID_FORMAT";
-
-            string roomCode = tokens[2];
-            var room = RoomManager.GetRoom(roomCode);
-            if (room == null) return "TEAM_FAIL|NO_ROOM";
-
-            bool ok = room.ChangeTeam(client);
-            if (!ok) return "TEAM_FAIL|NOT_FOUND";
-
-            // 팀 변경 브로드캐스트
-            int? newTeam = room.GetTeam(client);
-            room.Broadcast($"TEAM_CHANGED|{client.getUserPk()}|{newTeam}");
-            return null;
         }
     }
 }

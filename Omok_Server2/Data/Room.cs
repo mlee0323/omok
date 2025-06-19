@@ -33,6 +33,8 @@ namespace Omok_Server2.Data
         private string blackTeam = "A";
         private string whiteTeam = "B";
 
+        private char currentStoneColor = 'B';
+
         private int stoneCount = 0;
 
         private int room_pk = 0;
@@ -159,16 +161,45 @@ namespace Omok_Server2.Data
 
         public bool ChangeTeam(ClientHandler client)
         {
-            if (!_teams.ContainsKey(client) || IsAnyLoading()) return false;
+            // 클라이언트가 팀에 없거나, 누군가 들어오려고 하고 있거나, 이미 준비된 유저는 팀 변경 불가
+            if (!_teams.ContainsKey(client) || IsAnyLoading() || readyStatus[client])
+                return false;
+
             int cur = _teams[client];
             _teams[client] = cur == 1 ? 2 : 1;
             BroadcastNotMe("TEAM_CHANGE", client);
 
             // _players
-            if (!_players.ContainsKey(client) || IsAnyLoading()) return false;
+            if (!_players.ContainsKey(client)) return false;
             _players[client].SetTeam(cur == 1 ? 2 : 1);
 
             return true;
+        }
+
+        public void ShuffleTeams()
+        {
+            if (_clients.Count == 0) return;
+
+            // 준비된 유저들은 고정, 준비 안된 유저만 셔플 대상
+            var readyClients = _clients.Where(c => readyStatus[c]).ToList();
+            var nonReadyClients = _clients.Except(readyClients).ToList();
+            if (nonReadyClients.Count == 0) return; // 모두 준비된 상태면 아무 것도 안 함
+
+            int attempts = 0;            
+            do
+            {
+                foreach (var c in nonReadyClients)
+                    _teams[c] = random.Next(1, 3);
+                attempts++;
+            } while (!HasTwoTeams() && attempts< 5);
+
+            // 준비 상태 유지
+            //// 준비 상태 초기화
+            //foreach (var c in _clients)
+            //{
+            //    readyStatus[c] = false;
+            //    _players[c].SetReady(false);
+            //}
         }
 
         public int? GetTeam(ClientHandler client) =>
@@ -230,27 +261,22 @@ namespace Omok_Server2.Data
             teamAOrder = GetTeamMembers(1).OrderBy(_ => Guid.NewGuid()).ToList();
             teamBOrder = GetTeamMembers(2).OrderBy(_ => Guid.NewGuid()).ToList();
 
-            int rnd = random.Next(1, 3);
-            currentTurnTeam = rnd == 1 ? "A" : "B";
-
-
-            blackTeam = currentTurnTeam;  // 선공팀은 흑돌로 고정
+            currentStoneColor = 'B';                // 항상 시작은 흑돌
+            int teamForBlack = random.Next(1, 3);
+            blackTeam = (teamForBlack == 1) ? "A" : "B";
             whiteTeam = (blackTeam == "A") ? "B" : "A";
+            currentTurnTeam = blackTeam;  // 흑돌 팀이 항상 선공으로
 
-            indexA = -1;
-            indexB = -1;
-
-            // 선공팀에게 바로 첫 턴을 부여
             if (currentTurnTeam == "A")
             {
-                indexA = 0; // A팀 리스트의 0번 플레이어가 첫 턴
+                indexA = random.Next(0, teamAOrder.Count);
                 var firstA = teamAOrder[indexA];
                 Broadcast($"GAME_START|A");
                 Broadcast($"TURN_INFO|A|0|{firstA.getNickname()}|{stoneCount}");
             }
-            else /* currentTurnTeam == "B" */
+            else
             {
-                indexB = 0; // B팀 리스트의 0번 플레이어가 첫 턴
+                indexB = random.Next(0, teamBOrder.Count);
                 var firstB = teamBOrder[indexB];
                 Broadcast($"GAME_START|B");
                 Broadcast($"TURN_INFO|B|0|{firstB.getNickname()}|{stoneCount}");
@@ -262,14 +288,26 @@ namespace Omok_Server2.Data
             room_pk = GameModel.SaveRoom(0, RoomCode, StartTime, EndTime);
             foreach (var c in _clients)
             {
-                if (_players[c].GetTeam() == rnd)
+                if (_players[c].GetTeam() == teamForBlack)
                     _players[c].SetStoneColor('B');
                 else
                     _players[c].SetStoneColor('W');
 
                 _players[c].SetTeamPk(GameModel.SaveTeam(room_pk, _players[c].GetPK(), _players[c].GetTeam(), _players[c].GetStoneColor()));
             }
-                
+
+            foreach (var c in _clients)
+            {
+                bool isBlack = (_players[c].GetTeam() == teamForBlack);
+                _players[c].SetStoneColor(isBlack ? 'B' : 'W');
+                _players[c].SetTeamPk(
+                        GameModel.SaveTeam(
+                                room_pk,
+                                _players[c].GetPK(),
+                                _players[c].GetTeam(),
+                                _players[c].GetStoneColor()
+                        ));
+            }
 
             //Broadcast($"GAME_START|{blackTeam}"); // 흑돌 팀을 알림
             //AdvanceTurn(); // 바로 턴 시작
@@ -364,8 +402,8 @@ namespace Omok_Server2.Data
 
             // return CheckWin(x, y, team);
             return CheckWin(x, y, board[x, y]);
-
         }
+
         public bool DeleteStone(int x,int y, int team, ClientHandler client)
         {
             if (x < 0 || x >= boardSize || y < 0 || y >= boardSize) return false;

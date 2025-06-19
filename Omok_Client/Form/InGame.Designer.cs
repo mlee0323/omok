@@ -53,11 +53,11 @@ namespace Omok_Client.Form
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.btn_chat_on = new MetroFramework.Controls.MetroButton();
             this.btn_chat = new MetroFramework.Controls.MetroButton();
             this.MySelfLabel = new MetroFramework.Controls.MetroLabel();
             this.deletingStone = new MetroFramework.Controls.MetroLabel();
             this.reset_timer = new System.Windows.Forms.Timer(this.components);
-            this.btn_chat_on = new MetroFramework.Controls.MetroButton();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -231,6 +231,7 @@ namespace Omok_Client.Form
             this.btn_shuffle.Size = new System.Drawing.Size(50, 21);
             this.btn_shuffle.TabIndex = 24;
             this.btn_shuffle.Text = "팀 셔플";
+            this.btn_shuffle.Click += new System.EventHandler(this.btn_shuffle_Click);
             // 
             // btn_move
             // 
@@ -335,6 +336,15 @@ namespace Omok_Client.Form
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "Menu";
             // 
+            // btn_chat_on
+            // 
+            this.btn_chat_on.Location = new System.Drawing.Point(6, 17);
+            this.btn_chat_on.Name = "btn_chat_on";
+            this.btn_chat_on.Size = new System.Drawing.Size(77, 32);
+            this.btn_chat_on.TabIndex = 3;
+            this.btn_chat_on.Text = "채팅 켜기";
+            this.btn_chat_on.Click += new System.EventHandler(this.btn_chat_on_Click);
+            // 
             // btn_chat
             // 
             this.btn_chat.Location = new System.Drawing.Point(6, 62);
@@ -368,15 +378,6 @@ namespace Omok_Client.Form
             // 
             this.reset_timer.Interval = 1000;
             this.reset_timer.Tick += new System.EventHandler(this.reset_timer_Tick);
-            // 
-            // btn_chat_on
-            // 
-            this.btn_chat_on.Location = new System.Drawing.Point(6, 17);
-            this.btn_chat_on.Name = "btn_chat_on";
-            this.btn_chat_on.Size = new System.Drawing.Size(77, 32);
-            this.btn_chat_on.TabIndex = 3;
-            this.btn_chat_on.Text = "채팅 켜기";
-            this.btn_chat_on.Click += new System.EventHandler(this.btn_chat_on_Click);
             // 
             // InGame
             // 

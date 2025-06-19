@@ -22,6 +22,8 @@ namespace Omok_Server2.Helper
                 "JOIN_RANDOM" => CommandType.JOIN_RANDOM,
                 "TEAM_INFO" => CommandType.TEAM_INFO,
                 "TEAM_CHANGED" => CommandType.TEAM_CHANGED,
+                "CHANGE_TEAM" => CommandType.CHANGE_TEAM,
+                "SHUFFLE_TEAM" => CommandType.SHUFFLE_TEAM,
                 "EXIT_ROOM" => CommandType.EXIT_ROOM,
                 "GAME_READY" => CommandType.GAME_READY,
                 "GAME_START" => CommandType.GAME_START,
@@ -46,6 +48,8 @@ namespace Omok_Server2.Helper
                 
                 CommandType.TEAM_INFO or
                 CommandType.TEAM_CHANGED or
+                CommandType.CHANGE_TEAM or
+                CommandType.SHUFFLE_TEAM or
                 CommandType.GAME_READY or
                 CommandType.EXIT_ROOM or
                 CommandType.GAME_START or

@@ -21,14 +21,25 @@ namespace Omok_Server2.Controllers
             {
                 case CommandType.TEAM_INFO:
                     return HandleTeamInfo(tokens, client);
+                
+                case CommandType.CHANGE_TEAM:
+                    return HandleChangeTeam(tokens, client);
+                
+                case CommandType.SHUFFLE_TEAM:
+                    return HandleShuffleTeam(tokens, client);
+                
                 case CommandType.EXIT_ROOM:
                     return HandleRoomExit(tokens, client);
+                
                 case CommandType.GAME_READY:
                     return HandleGameReady(tokens, client);
+                
                 case CommandType.STONE_PUT:
                     return HandleStonePut(tokens, client);
+                
                 case CommandType.SKILL_USE:
                     return HandleSkillUse(tokens, client);
+                
                 case CommandType.STONE_DEL:
                     return HandleStoneDel(tokens, client);
             }
@@ -54,6 +65,48 @@ namespace Omok_Server2.Controllers
 
             client.Send("TEAM_INFO_END");
             return null;
+        }
+        
+        // 팀 이동 처리
+        private static string HandleChangeTeam(string[] tokens, ClientHandler client)
+        {
+            if (tokens.Length < 4) return "TEAM_FAIL|INVALID_FORMAT";
+
+            string roomCode = tokens[3];
+            var room = RoomManager.GetRoom(roomCode);
+            if (room == null) return "TEAM_FAIL|NO_ROOM";
+
+            bool ok = room.ChangeTeam(client);
+            if (!ok) return "TEAM_FAIL|NOT_FOUND";
+
+            // 수정: 닉네임·팀번호·준비상태까지 같이 보내기
+            int ? newTeam = room.GetTeam(client);
+            bool ready = room.IsReady(client);
+            room.Broadcast($"TEAM_CHANGED|{client.getUserPk()}|{client.getNickname()}|{newTeam}|{ready}");
+
+            return null;
+        }
+
+        private static string HandleShuffleTeam(string[] tokens, ClientHandler client)
+        {
+            if (tokens.Length< 4) return "SHUFFLE_FAIL|FORMAT";
+            
+            string roomCode = tokens[3];
+            var room = RoomManager.GetRoom(roomCode);
+            
+            if (room == null) return "SHUFFLE_FAIL|NO_ROOM";
+
+            // 1) 서버 쪽에서 랜덤 재배정
+            room.ShuffleTeams();
+
+            // 2) 각 플레이어별 팀 변경 브로드캐스트
+            foreach (var member in room.Clients)
+            {
+                int team = room.GetTeam(member) ?? 1;
+                bool ready = room.IsReady(member);
+                room.Broadcast($"TEAM_CHANGED|{member.getUserPk()}|{member.getNickname()}|{team}|{ready}");
+            }
+            return "SHUFFLE_OK";
         }
 
         private static string HandleRoomExit(string[] tokens, ClientHandler client)
