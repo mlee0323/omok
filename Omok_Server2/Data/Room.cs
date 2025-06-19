@@ -113,14 +113,33 @@ namespace Omok_Server2.Data
             if (IsFull || gameStarted) return false;
 
             _clients.Add(client);
-            _teams[client] = (_clients.Count % 2 == 0) ? 2 : 1;
+            
+            // 비어있는 팀에 먼저 들어가도록 팀 할당
+            int teamACount = _teams.Values.Count(t => t == 1);
+            int teamBCount = _teams.Values.Count(t => t == 2);
+            
+            int assignedTeam;
+            if (teamACount <= teamBCount && teamACount < 2) // A팀이 더 적거나 같고, A팀이 2명 미만이면 A팀
+            {
+                assignedTeam = 1;
+            }
+            else if (teamBCount < 2) // B팀이 2명 미만이면 B팀
+            {
+                assignedTeam = 2;
+            }
+            else // 둘 다 가득 찬 경우 A팀에 할당 (이론적으로는 발생하지 않아야 함)
+            {
+                assignedTeam = 1;
+            }
+            
+            _teams[client] = assignedTeam;
             readyStatus[client] = false;
 
             // _players
             _players[client] = new Player(
                     int.Parse(client.getUserPk()),
                     client.getNickname(),
-                    (_clients.Count % 2 == 0) ? 2 : 1
+                    assignedTeam
             );
 
             return true;
