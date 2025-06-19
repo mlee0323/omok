@@ -300,18 +300,18 @@ namespace Omok_Server2.Data
                 _players[c].SetTeamPk(GameModel.SaveTeam(room_pk, _players[c].GetPK(), _players[c].GetTeam(), _players[c].GetStoneColor()));
             }
 
-            foreach (var c in _clients)
-            {
-                bool isBlack = (_players[c].GetTeam() == teamForBlack);
-                _players[c].SetStoneColor(isBlack ? 'B' : 'W');
-                _players[c].SetTeamPk(
-                        GameModel.SaveTeam(
-                                room_pk,
-                                _players[c].GetPK(),
-                                _players[c].GetTeam(),
-                                _players[c].GetStoneColor()
-                        ));
-            }
+            //foreach (var c in _clients)
+            //{
+            //    bool isBlack = (_players[c].GetTeam() == teamForBlack);
+            //    _players[c].SetStoneColor(isBlack ? 'B' : 'W');
+            //    _players[c].SetTeamPk(
+            //            GameModel.SaveTeam(
+            //                    room_pk,
+            //                    _players[c].GetPK(),
+            //                    _players[c].GetTeam(),
+            //                    _players[c].GetStoneColor()
+            //            ));
+            //}
 
             //Broadcast($"GAME_START|{blackTeam}"); // 흑돌 팀을 알림
             //AdvanceTurn(); // 바로 턴 시작
@@ -422,9 +422,11 @@ namespace Omok_Server2.Data
         }
 
         // 엎기 처리
-        public void TurnOver()
+        public void TurnOver(ClientHandler client)
         {
             UpdateResult();
+            if (_players[client] != null)
+                GameModel.RecordStone(room_pk, _players[client].GetPK(), _players[client].GetName(), _players[client].GetTeam(), 0, 0, _players[client].GetStoneColor(), 3);    // 엎기는 3으로 설정
         }
 
         private bool CheckWin(int x, int y, int team)

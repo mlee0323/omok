@@ -238,7 +238,7 @@ namespace Omok_Server2.Controllers
             if (skillType == 3)
             {
                 room.SetGameResult(-1);                                 // 무승부 처리
-                room.TurnOver();
+                room.TurnOver(client);
                 room.Broadcast($"GAME_OVER|{room.GetGameResult()}");    // 0은 무승부를 의미
                 room.ResetGame();
             }

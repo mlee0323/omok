@@ -90,7 +90,7 @@ namespace Omok_Client.Form
                 else
                     id_dupl_checked = false;
 
-                MessageBox.Show(response == "ID_OK" ? "사용 가능한 닉네임" : "이미 존재하는 닉네임");
+                MessageBox.Show(response == "ID_OK" ? "사용 가능한 아이디" : "이미 존재하는 아이디");
                 Client.Disconnect();
             }
             catch (Exception ex)
