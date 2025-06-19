@@ -10,6 +10,13 @@ namespace Omok_Client.Control
 {
     public partial class ChatForm : UserControl
     {
+        public bool chatFlag = true;
+
+        public void chatToggle()
+        {
+            btn_send.Enabled = chatFlag;
+            txt_msg.Enabled = chatFlag;
+        }
         public ChatForm()
         {
             InitializeComponent();
@@ -54,6 +61,11 @@ namespace Omok_Client.Control
 
         public void AppendChatMessage(string nickname, string message)
         {
+            if (!chatFlag)
+            {
+                return;
+            }
+
             if (txt_chat.InvokeRequired)
             {
                 txt_chat.Invoke(new Action(() => AppendChatMessage(nickname, message)));

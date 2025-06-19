@@ -587,6 +587,33 @@ namespace Omok_Client.Form
             }
             
         }
+
+        private void btn_chat_Click(object sender, EventArgs e)
+        {
+            if (chatForm.chatFlag == false) return;
+            //if (chatForm.Visible == false) return;
+
+            //chatForm.Visible = false;
+            //this.Width -= chatForm.Width;
+            chatForm.chatFlag = false;
+            chatForm.chatToggle();
+            AppendSystemMessage($"채팅 기능 OFF");
+
+        }
+
+        private void btn_chat_on_Click(object sender, EventArgs e)
+        {
+            if( chatForm.chatFlag == true) return;
+            
+            chatForm.chatFlag = true;
+            chatForm.chatToggle();
+            AppendSystemMessage($"채팅 기능 ON");
+            //if (chatForm.Visible == true) return;
+
+            //chatForm.Visible = true;
+            //this.Width += chatForm.Width;
+
+        }
     }
 }
 
