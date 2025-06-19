@@ -134,10 +134,10 @@ namespace Omok_Client.Form
             {
                 case "TEAM_CHANGED":
                 case "TEAM_INFO":
-                    var pk = tokens[1];
-                    var nickname = tokens[2];
-                    if (!int.TryParse(tokens[3], out int team)) return;
-                    bool readyFlag = tokens.Length >= 5 && bool.TryParse(tokens[4], out bool r) && r;
+                    var     pk              = tokens[1];
+                    var     nickname        = tokens[2];
+                    int     team            = int.Parse(tokens[3]);
+                    bool    ready           = tokens.Length >= 5 && bool.Parse(tokens[4]);
 
                     if (pk == Session.Pk.ToString())
                     {
@@ -149,9 +149,7 @@ namespace Omok_Client.Form
                     {
                         RemovePlayerFromTeams(nickname);
 
-                        string str = nickname;
-                        if (readyFlag)
-                            str += " (Ready)";
+                        string str = nickname + (ready ? " (Ready)" : "");
                         var item = new ListViewItem(str) { Name = nickname };
                         if (team == 1)
                             lv_teamA.Items.Add(item);
@@ -459,13 +457,35 @@ namespace Omok_Client.Form
         {
             if (roomCode == null || !isInitialized) return;
 
-            Client.Send($"CHANGE_TEAM|{Session.Pk}|{roomCode}");
+            Client.Send($"CHANGE_TEAM|{Session.Pk}|{Session.Nickname}|{roomCode}");
+        }
+
+        private void btn_shuffle_Click(object sender, EventArgs e)
+        {
+            if (roomCode == null || !isInitialized) return;
+
+            lv_teamA.Items.Clear();
+            lv_teamB.Items.Clear();
+
+            // 서버로 셔플 요청
+            Client.Send($"SHUFFLE_TEAM|{Session.Pk}|{Session.Nickname}|{roomCode}");
         }
 
         private void btn_ready_Click(object sender, EventArgs e)
         {
             isReady = !isReady;
-            btn_ready.Text = isReady ? "준비 해제" : "게임 준비";
+            if (isReady)
+            {
+                btn_move.Enabled = false;
+                btn_shuffle.Enabled = false;
+                btn_ready.Text = "준비 해제";
+            }
+            else
+            {
+                btn_move.Enabled = true;
+                btn_shuffle.Enabled = true;
+                btn_ready.Text = "게임 준비";
+            }
             Client.Send($"GAME_READY|{Session.Pk}|{Session.Nickname}|{roomCode}|{isReady}");
         }
 
@@ -614,6 +634,8 @@ namespace Omok_Client.Form
             //this.Width += chatForm.Width;
 
         }
+
+
     }
 }
 

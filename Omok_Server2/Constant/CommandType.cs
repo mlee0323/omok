@@ -21,6 +21,8 @@ namespace Omok_Server2.Constant
         TEAM_INFO,
         TEAM_INFO_END,
         TEAM_CHANGED,
+        CHANGE_TEAM,
+        SHUFFLE_TEAM,
 
         // ROOM
         EXIT_ROOM,
